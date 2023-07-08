@@ -1,38 +1,38 @@
 function log(txt)
-LogToConsole("`0[`bALFIRST-STORE`0]`9: "..txt)
+    LogToConsole("`0[`^ALFIRST-STORE`0]`8: "..txt)
 end
 --
 function isReady(tile)
-if tile and tile.extra and tile.extra.progress and tile.extra.progress == 1.0 then
-return true
-end
+    if tile and tile.extra and tile.extra.progress and tile.extra.progress == 1.0 then
+    return true
+    end
 return false
 end
 --
 function pake(id)
-for _, itm in pairs(GetInventory()) do
-if itm.id == id and itm.flags == 1 then
-return true
-end
-end
+    for _, itm in pairs(GetInventory()) do
+    if itm.id == id and itm.flags == 1 then
+    return true
+    end
+    end
 return false
 end
 
 function wear(id)
-if pake(id) then
-return end
-pkt = {}
-pkt.value = id
-pkt.type = 10
-SendPacketRaw(false,pkt)
+    if pake(id) then
+    return end
+    pkt = {}
+    pkt.value = id
+    pkt.type = 10
+    SendPacketRaw(false,pkt)
 end
 --
 function findItem(id)
-for _, itm in pairs(GetInventory()) do
-if itm.id == id then
-return itm.amount
-end
-end
+    for _, itm in pairs(GetInventory()) do
+    if itm.id == id then
+    return itm.amount
+    end
+    end
 return 0
 end
 --
