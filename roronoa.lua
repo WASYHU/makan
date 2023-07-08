@@ -1,5 +1,5 @@
 function log(txt)
-    LogToConsole("`0[`^ALFIRST-STORE`0]`8: "..txt)
+    LogToConsole("`0[`^ALFIRST-STORE`0]`#: "..txt)
 end
 --
 function isReady(tile)
