@@ -64,7 +64,7 @@ local function CheckRemote()
 end
 
 local function NaniKore()
-    if KONFIGURASI.Alone == false then
+    if KONFIGURASI.Mode.Alone == false then
         SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_lonely|0\ncheck_gems|1")
     else
         SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_lonely|1\ncheck_gems|1")
@@ -80,6 +80,7 @@ local function NaniKore()
             end
             CHANGE_REMOTE = false
         end
+        return checkTree()
 end
 --
 
@@ -123,11 +124,11 @@ local DATA = [[
                 "thumbnail": {
                     "url": "https://cdn.growtopia.tech/items/4584.png"
                 },
-                "description" : "]]..text..[[\n:exclamation: Name = ]]..delCol(GetLocal().name)..[[\n<:gems:1011931178510602240> Gems = ]]..addComa(GetPlayerInfo().gems)..[[\n<:world_generation:937567566656843836> World = ]]..CONFIG.Webhook_Set.worlds..[[\n<:globe:1011929997679796254> UWS = ]]..findItem(12600)..[[\n<a:ArrowRgb:961613703176941598> Tree = ]]..scanseed(CONFIG.Webhook_Set.idseed)..[[\n<a:ArrowRgb:961613703176941598> Delay PathMove = ]]..KONFIGURASI.Delay_Set.pathmove..[[\n<a:ArrowRgb:961613703176941598> HAND MODE = ]]..KONFIGURASI.Hand_Set.Hand..[[\n<a:ArrowRgb:961613703176941598> PLANT MODE = ]]..KONFIGURASI.Tile_Set.Mode..[[\n<a:ArrowRgb:961613703176941598> PT FOR | HT FOR = ]]..KONFIGURASI.Tile_Set.PT_for..[[ | ]]..KONFIGURASI.Tile_Set.HT_for..[[\n<:growtopia_clock:1011929976628596746> SC Uptime = ]]..math.floor(te/86400)..[[ Days ]]..math.floor(te%86400/3600)..[[ Hours ]]..math.floor(te%86400%3600/60)..[[ Minutes"
+                "description" : "]]..text..[[\n:exclamation: Name = ]]..delCol(GetLocal().name)..[[\n<:gems:1011931178510602240> Gems = ]]..addComa(GetPlayerInfo().gems)..[[\n<:world_generation:937567566656843836> World = ]]..KONFIGURASI.Webhook_Set.worlds..[[\n<:globe:1011929997679796254> UWS = ]]..findItem(12600)..[[\n<a:ArrowRgb:961613703176941598> Tree = ]]..scanseed(KONFIGURASI.Webhook_Set.idseed)..[[\n<a:ArrowRgb:961613703176941598> Delay PathMove = ]]..KONFIGURASI.Delay_Set.pathmove..[[\n<a:ArrowRgb:961613703176941598> HAND MODE = ]]..KONFIGURASI.Hand_Set.Hand..[[\n<a:ArrowRgb:961613703176941598> PLANT MODE = ]]..KONFIGURASI.Tile_Set.Mode..[[\n<a:ArrowRgb:961613703176941598> PT FOR | HT FOR = ]]..KONFIGURASI.Tile_Set.PT_for..[[ | ]]..KONFIGURASI.Tile_Set.HT_for..[[\n<:growtopia_clock:1011929976628596746> SC Uptime = ]]..math.floor(te/86400)..[[ Days ]]..math.floor(te%86400/3600)..[[ Hours ]]..math.floor(te%86400%3600/60)..[[ Minutes"
             }]
         }
         ]]
-MakeRequest(CONFIG.Webhook_Set.URL, "POST",{["Content-Type"] = "application/json"}, DATA)
+MakeRequest(KONFIGURASI.Webhook_Set.URL, "POST",{["Content-Type"] = "application/json"}, DATA)
 end
 
 -- 
@@ -135,12 +136,12 @@ end
 function ht()
 if KONFIGURASI.Tile_Set.HT_for == "BAWAH" then
     log("HARVEST DARI BAWAH")
-if CONFIG.Webhook_Set.disable == false then
+if KONFIGURASI.Webhook_Set.disable == false then
     powershell("LAGI HARVEST")
         Sleep(100)
         else
         end
-        if KONFIGURASI.Alone == false then
+        if KONFIGURASI.Mode.Alone == false then
             SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_lonely|0\ncheck_gems|1")
         else
             SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_lonely|1\ncheck_gems|1")
@@ -176,12 +177,12 @@ end
 
 if KONFIGURASI.Tile_Set.HT_for == "ATAS" then
     log("HARVEST DARI ATAS")
-if CONFIG.Webhook_Set.disable == false then
+if KONFIGURASI.Webhook_Set.disable == false then
     powershell("LAGI HARVEST")
         Sleep(100)
         else
         end
-        if KONFIGURASI.Alone == false then
+        if KONFIGURASI.Mode.Alone == false then
             SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_lonely|0\ncheck_gems|1")
         else
             SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_lonely|1\ncheck_gems|1")
@@ -218,14 +219,14 @@ end
 
 function pt()
     if MAG_EMPTY then return NaniKore() end
-if CONFIG.Webhook_Set.disable == false then
+if KONFIGURASI.Webhook_Set.disable == false then
     powershell("LAGI PLANT")
     else
     end
         Sleep(100)
         place(5640,0,0)
         Sleep(1000)
-if KONFIGURASI.Alone == false then
+if KONFIGURASI.Mode.Alone == false then
     SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|1\ncheck_lonely|0\ncheck_gems|1")
 else
     SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|1\ncheck_lonely|1\ncheck_gems|1")
@@ -624,7 +625,7 @@ end
 
 function tambal()
     if MAG_EMPTY then return NaniKore() end
-if CONFIG.Webhook_Set.disable == false then
+if KONFIGURASI.Webhook_Set.disable == false then
 powershell("LAGI NAMBAL")
 else
 end
@@ -687,7 +688,7 @@ for x= KONFIGURASI.Tile_Set.startptx,KONFIGURASI.Tile_Set.endptx,10 do
 end
 
 function useUws()
-if CONFIG.Webhook_Set.disable == false then
+if KONFIGURASI.Webhook_Set.disable == false then
 powershell("MENGGUNAKAN UWS")
 else
 end
@@ -701,7 +702,7 @@ end
 Sleep(100)
         log("PTHT DIHENTIKAN")
 Sleep(100)
-if CONFIG.Webhook_Set.disable == false then
+if KONFIGURASI.Webhook_Set.disable == false then
 powershell("UWS HABIS,PTHT DIHENTIKAN")
 else
 end
@@ -760,7 +761,7 @@ username = os.getenv("USERNAME");
 if file("C:\\Users\\"..username.."\\AppData\\Local\\true.txt") then
     os.remove("C:\\Users\\"..username.."\\AppData\\Local\\true.txt")
 
-if CONFIG.Webhook_Set.disable == false then
+if KONFIGURASI.Webhook_Set.disable == false then
 powershell("ID SESUAI, PTHT DIJALANKAN")
 else
 end
@@ -768,7 +769,7 @@ Sleep(1000)
 log("ID SESUAI, PTHT DIJALANKAN")
 Sleep(1000)
 
-if KONFIGURASI.Alone == false then
+if KONFIGURASI.Mode.Alone == false then
 SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_lonely|0\ncheck_gems|1")
 else
 log("MODE ALONE = `2True")
@@ -790,7 +791,7 @@ CheckRemote()
 
 elseif file("C:\\Users\\"..username.."\\AppData\\Local\\false.txt") then
     os.remove("C:\\Users\\"..username.."\\AppData\\Local\\false.txt")
- if CONFIG.Webhook_Set.disable == false then
+ if KONFIGURASI.Webhook_Set.disable == false then
 powershell("ID GAK SESUAI/KONTAK ADMIN ALFIRST STORE (linktr.ee/alfirst_store)")
 else
 end
