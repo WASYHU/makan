@@ -5,7 +5,7 @@ local REMOTE_X = KONFIGURASI.MAGPLANTS.XMAG
 local REMOTE_Y = KONFIGURASI.MAGPLANTS.YMAG
 
 local MAG_EMPTY = false
-local CHANGE_REMOTE = true
+local CHANGE_REMOTE = false
 local START_MAG_X = KONFIGURASI.MAGPLANTS.XMAG
 local START_MAG_Y = KONFIGURASI.MAGPLANTS.YMAG
 --
@@ -57,6 +57,7 @@ local function CheckRemote()
     end
 
     if findItem(5640) >= 1 and MAG_EMPTY then
+        checkTree()
         MAG_EMPTY = false
     end
     
