@@ -57,11 +57,10 @@ local function CheckRemote()
     end
 
     if findItem(5640) >= 1 and MAG_EMPTY then
-        checkTree()
         MAG_EMPTY = false
     end
     
-    return findItem(5640) >= 1
+    return checkTree()
 end
 
 local function NaniKore()
