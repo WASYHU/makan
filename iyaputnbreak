@@ -563,7 +563,7 @@ sleep(DELAYWARP)
 sleep(100)
 AWALB = gscan(BLOCKID)
 
-while AWALB ~= 0 do
+while AWALB >= 1 do
     if inv:findItem(SEEDID) >= 1 then
         if SAYING then
         bot:say("OTW DROP SEED")
