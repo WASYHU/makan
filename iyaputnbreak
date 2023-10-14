@@ -1,4 +1,4 @@
---14/10/2023:12:52
+--14/10/2023:13:53
 --------dont touch--------
 bot = getBot()
 world = bot:getWorld()
@@ -561,6 +561,7 @@ sleep(2000)
 goesTo(WORLDBLOCK,IDWORLDBLOCK)
 sleep(DELAYWARP)
 sleep(100)
+gscan(BLOCKID)
 AWALB = gscan(BLOCKID)
 
 while AWALB >= 1 do
