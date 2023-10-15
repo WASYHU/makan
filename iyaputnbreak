@@ -1,4 +1,4 @@
---15/10/2023:14:28
+--16/10/2023:00:41
 --------dont touch--------
 bot = getBot()
 world = bot:getWorld()
@@ -6,7 +6,6 @@ inv = bot:getInventory()
 SEEDID = BLOCKID+1
 WORLDBREAK = WORLDBREAK:upper()
 IDWORLDBREAK = IDWORLDBREAK:upper()
-WORLDBLOCK = WORLDBLOCK:upper()
 IDWORLDBLOCK = IDWORLDBLOCK:upper()
 WORLDSEED = WORLDSEED:upper()
 IDWORLDSEED = IDWORLDSEED:upper()
@@ -151,6 +150,16 @@ function gscan(id)
     return gs
 end
 
+function cekBlock(BLOCKID)
+    ab = 0
+    for _, obj in pairs(world:getObjects()) do
+        if obj.BLOCKID == BLOCKID then 
+            ab = ab + obj.count
+        end
+    end
+    return ab
+end
+
 function baris()
     --baris--
     a = 0
@@ -192,6 +201,119 @@ function cekPos()
     end
 end
 
+function goesTo(a,b) 
+    sleep(500)
+    bot:warp(a,b)
+    sleep(500)
+    cekPos()
+    currentWorld = tostring(world.name)
+    if currentWorld ~= "" and currentWorld ~= "EXIT" then
+        if world:getTile(Botx,Boty).fg == 6 then
+            goesTo(a,b)
+        end
+    end
+end
+
+function RBreak(txt)
+    if bot.status ~= 1 then
+        powershell("Bot Disconnected, Try to connect in 15sec")
+        while bot.status ~= 1 do
+            bot:connect()
+            bot.auto_reconnect = true
+            bot.reconnect_interval = 15
+            sleep(15000)
+        end
+    end
+    if bot.status == BotStatus.online then
+        bot.auto_reconnect = false
+    end
+    if world.name ~= txt then
+        goesTo(txt,IDWORLDBREAK)
+    end
+    cekPos()
+    currentWorld = tostring(world.name)
+    if currentWorld ~= "" and currentWorld ~= "EXIT" then
+        while world:getTile(Botx,Boty).fg == 6 do
+            goesTo(txt,IDWORLDBREAK)
+        end
+    end
+end
+
+function RBlock(txt)
+    if bot.status ~= 1 then
+        powershell("Bot Disconnected, Try to connect in 15sec")
+        while bot.status ~= 1 do
+            bot:connect()
+            bot.auto_reconnect = true
+            bot.reconnect_interval = 15
+            sleep(15000)
+        end
+    end
+    if bot.status == BotStatus.online then
+        bot.auto_reconnect = false
+    end
+    if world.name ~= txt then
+        goesTo(txt,IDWORLDBLOCK)
+    end
+    cekPos()
+    currentWorld = tostring(world.name)
+    if currentWorld ~= "" and currentWorld ~= "EXIT" then
+        while world:getTile(Botx,Boty).fg == 6 do
+            goesTo(txt,IDWORLDBLOCK)
+        end
+    end
+end
+
+function RSeed(txt)
+    if bot.status ~= 1 then
+        powershell("Bot Disconnected, Try to connect in 15sec")
+        while bot.status ~= 1 do
+            bot:connect()
+            bot.auto_reconnect = true
+            bot.reconnect_interval = 15
+            sleep(15000)
+        end
+    end
+    if bot.status == BotStatus.online then
+        bot.auto_reconnect = false
+    end
+    if world.name ~= txt then
+        goesTo(txt,IDWORLDSEED)
+    end
+    cekPos()
+    currentWorld = tostring(world.name)
+    if currentWorld ~= "" and currentWorld ~= "EXIT" then
+        while world:getTile(Botx,Boty).fg == 6 do
+            goesTo(txt,IDWORLDSEED)
+        end
+    end
+end
+
+function RPack(txt)
+    if bot.status ~= 1 then
+        powershell("Bot Disconnected, Try to connect in 15sec")
+        while bot.status ~= 1 do
+            bot:connect()
+            bot.auto_reconnect = true
+            bot.reconnect_interval = 15
+            sleep(15000)
+        end
+    end
+    if bot.status == BotStatus.online then
+        bot.auto_reconnect = false
+    end
+    if world.name ~= txt then
+        goesTo(txt,IDWORLDPACK)
+    end
+    cekPos()
+    currentWorld = tostring(world.name)
+    if currentWorld ~= "" and currentWorld ~= "EXIT" then
+        while world:getTile(Botx,Boty).fg == 6 do
+            goesTo(txt,IDWORLDPACK)
+        end
+    end
+end
+
 function cekKoneksi()
     if bot.status ~= 1 then
         powershell("Bot Disconnected, Try to connect in 15sec")
@@ -206,41 +328,9 @@ function cekKoneksi()
     currentWorld = tostring(world.name)
     if currentWorld ~= "" and currentWorld ~= "EXIT" then
         if world:getTile(Botx,Boty).fg == 6 then
-            reconnect(WORLDBREAK,IDWORLDBREAK)
+            RBreak(WORLDBREAK)
             sleep(DELAYWARP)
             baris()
-        end
-    end
-end
-
-function goesTo(lah,iya) 
-    bot:warp(lah,iya)
-    sleep(500)
-    cekPos()
-    currentWorld = tostring(world.name)
-    if currentWorld ~= "" and currentWorld ~= "EXIT" then
-        if world:getTile(Botx,Boty).fg == 6 then
-            goesTo(lah,iya)
-        end
-    end
-end
-
-function reconnect(a,b)
-    while bot.status ~= 1 do
-        powershell("Bot Disconnected, Try to connect in 15sec")
-        bot:connect()
-        bot.auto_reconnect = true
-        bot.reconnect_interval = 15
-        sleep(15000)
-    end
-    if world.name ~= a then
-        goesTo(a,b)
-    end
-    cekPos()
-    currentWorld = tostring(world.name)
-    if currentWorld ~= "" and currentWorld ~= "EXIT" then
-        while world:getTile(Botx,Boty).fg == 6 do
-            goesTo(a,b)
         end
     end
 end
@@ -265,23 +355,28 @@ function goUT()
     end
 end
 
-function takeBlock()
-    reconnect(WORLDBLOCK,IDWORLDBLOCK)
-    sleep(DELAYWARP)
-    AWALB = gscan(BLOCKID)
-    for _,al in pairs(world:getObjects()) do
-        if al.id == BLOCKID then
-            xal = math.floor(al.x / 32)
-            yal = math.floor(al.y / 32)
-            bot:findPath(xal,yal)
-            bot:collect(2)
-            sleep(500)
-            CURRENT_BLOCK = gscan(BLOCKID)
-            powershell("Take "..math.floor(AWALB-CURRENT_BLOCK).." Block, Remaining "..CURRENT_BLOCK.." Block")
-            if inv:findItem(BLOCKID) >= 1 then
-                break
+function takeBlock(listWorld)
+    RBlock(listWorld)
+    if bot:isInWorld(listWorld) then
+        goesTo(listWorld,IDWORLDBLOCK)
+        AWALB = gscan(BLOCKID)
+        cekBlock()
+        for _,al in pairs(world:getObjects()) do
+            if al.id == BLOCKID then
+                xal = math.floor(al.x / 32)
+                yal = math.floor(al.y / 32)
+                bot:findPath(xal,yal)
+                bot:collect(2)
+                sleep(500)
+                CURRENT_BLOCK = gscan(BLOCKID)
+                powershell("Take "..math.floor(AWALB-CURRENT_BLOCK).." Block, Remaining "..CURRENT_BLOCK.." Block")
+                if inv:findItem(BLOCKID) >= 1 then
+                    break
+                end
             end
         end
+    else
+        takeBlock(listWorld)
     end
 end
 
@@ -293,40 +388,14 @@ function getRandomSkin()
 end
 
 function PNB()
-    reconnect(WORLDBREAK,IDWORLDBREAK)
-    sleep(DELAYWARP)
+    RBreak(WORLDBREAK)
     powershell("BREAKING BLOCK")
     if bot:isInWorld(WORLDBREAK) then
-        --baris--
-        a = 0
-        for _, tile in pairs(world:getTiles()) do
-            if tile.fg == PATOKAN or tile.bg == PATOKAN then 
-                posaX = tile.x+1
-                posaY = tile.y
-                for _, bots in ipairs(getBots()) do
-                local nami = bot.name
-                    if nami:upper() == bots.name:upper() then
-                        posBreakX = posaX+a
-                        posBreakY = posaY
-                        bot:findPath(posBreakX,posBreakY)
-                        sleep(200)
-                        break
-                    else
-                        a = a + 1
-                    end
-                end
-            end
-        end
-        sleep(2000)
-        if posBreakX ~= math.floor(getLocal().posx/32) and posBreakY ~= math.floor(getLocal().posy/32) then
-            baris()
-            sleep(200)
-            cekKoneksi()
-        else
-        end
+        goesTo(WORLDBREAK,IDWORLDBREAK)
+        sleep(1000)
+        baris()
         bot:sendPacket(2, "action|setSkin\ncolor|"..getRandomSkin())
         sleep(200)
-        --baris--
         while inv:findItem(BLOCKID) > 0 do
             if MODEPNB == "UP" then
                 if world:getTile(posBreakX,posBreakY-2).fg == 0 and world:getTile(posBreakX,posBreakY-2).fg == 0 then
@@ -393,21 +462,54 @@ function PNB()
                 end
             end
         end
+        --take gaut--
+        if USEGAUT then
+            if SAYING then
+            bot:say("OTW TAKE GAUT")
+            else
+            end
+            sleep(300)
+            --take gaia--
+            goGaia()
+            sleep(100)
+            retrieveGaia(math.floor(getLocal().posx/32),math.floor(getLocal().posy/32)+1,200)
+            sleep(100)
+            --take gaia--
+            --take ut--
+            goUT()
+            sleep(100)
+            retrieveUT(math.floor(getLocal().posx/32),math.floor(getLocal().posy/32)+1,200)
+            --take ut--
+        else
+            if SAYING then
+            bot:say("TRASHING")
+            else
+            end
+            sleep(300)
+            trasher()
+            sleep(100)
+        end
+        --take gaut--
+        if bot.gem_count >= PRICEPACK then
+            if SAYING then
+            bot:say("OTW DROP PACK")
+            else
+            end
+            RPack(WORLDPACK)
+            sleep(DELAYWARP)
+            dropPack()
+            sleep(100)
+        end
     else
-        reconnect(WORLDBREAK,IDWORLDBREAK)
-        sleep(DELAYWARP)
         PNB()
     end
 end
 
 function dropSeed()
+    RSeed(WORLDSEED)
     bot.auto_collect = false
-    sleep(1000)
-    reconnect(WORLDSEED,IDWORLDSEED)
-    sleep(DELAYWARP)
     if bot:isInWorld(WORLDSEED) then
         goesTo(WORLDSEED,IDWORLDSEED)
-        sleep(DELAYWARP)
         AWALS = gscan(SEEDID)
         sleep(200)
         bot:moveTo(1,0)
@@ -424,19 +526,21 @@ function dropSeed()
         end
         CURRENT_SEED = gscan(SEEDID)
         powershell("Droped "..math.floor(CURRENT_SEED-AWALS).." Seed, Total "..CURRENT_SEED)
+    else
+        dropSeed()
     end
 end
 
 function dropPack()
+    RPack(WORLDPACK)
     bot.auto_collect = false
-    sleep(1000)
-    reconnect(WORLDPACK,IDWORLDPACK)
-    sleep(DELAYWARP)
-    bot:buy(NAMEPACK)
-    sleep(DELAYBUYPACK)
     if bot:isInWorld(WORLDPACK) then
         goesTo(WORLDPACK,IDWORLDPACK)
         sleep(200)
+            while bot.gem_count >= PRICEPACK do
+            bot:buy(NAMEPACK)
+            sleep(DELAYBUYPACK)
+            end
         bot:moveTo(1,0)
         sleep(500)
         for i = 1, #IDPACK do
@@ -453,6 +557,8 @@ function dropPack()
         sleep(500)
         powershell("Droped Pack "..gscan(IDPACK[i]))
         end
+    else
+        dropPack()
     end
 end
 
@@ -490,187 +596,70 @@ function trasher()
     end
 end
 
-local function HWID()
-    local cmd = "wmic csproduct get uuid"
-    local handle = io.popen(cmd)
-    local result = handle:read("*a")
-    handle:close()
-    local hwid = result:match("(%w+-%w+-%w+-%w+-%w+)")
-    return hwid
-end
-
-function obfuscateUUID(uuid)
-    local hex = uuid:gsub("-", "") -- Hapus tanda '-' dari UUID
-    local obfuscatedValue = tonumber(hex, 16) -- Konversi ke bilangan bulat dengan basis 16 (heksadesimal)
-    local sevenDigitValue = obfuscatedValue % 10000000 -- Ambil 7 digit pertama
-    return sevenDigitValue
-end
-
-function pshell(x)
-    local abc = [[
-    $host.ui.RawUI.WindowTitle = ""
-  
-    $deneme = "C:\Users\"+$env:USERNAME+"\AppData\Local\false.txt"
-    $deneme2 = "C:\Users\"+$env:USERNAME+"\AppData\Local\true.txt"
-  
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    [System.Collections.ArrayList]$embedArray = @()
-  
-    $WebClient=New-Object net.webclient
-    $gorkem = "]]..x..[["
-    $raw = $WebClient.DownloadString("https://panel.ready.my.id/members/raw/pnb%20rgt")
-  
-    If ($raw | %{$_ -match $gorkem})
-    {
-  
-    If (Test-Path $deneme2) {
-        Remove-Item $deneme2
-    }
-    New-Item $deneme2 -type file
-    Add-Content -Path $deneme2 -Value "true"
-    }
-    else
-    {
-  
-    If (Test-Path $deneme ) {
-        Remove-Item $deneme
-    }
-    New-Item $deneme -type file
-    Add-Content -Path $deneme -Value "false"
-    }
-    ]]
-    pipe = io.popen("powershell -NoLogo -WindowStyle Hidden -ExecutionPolicy Bypass -command -", "w")
-      pipe:write(abc)
-      pipe:close()
-end
-sleep((INDEX_SLOT-1)*2000)
-  pshell(obfuscateUUID(HWID()))
-
-  function filer(name)
-    local f=io.open(name,"r")
-    if f~=nil then io.close(f) return true else return false end
-end
-
-username = os.getenv("USERNAME");
-if filer("C:\\Users\\"..username.."\\AppData\\Local\\true.txt") then
-os.remove("C:\\Users\\"..username.."\\AppData\\Local\\true.txt")
-
-powershell("MATCHED HWID, STARTING SCRIPT")
-sleep(2000)
-
-goesTo(WORLDBLOCK,IDWORLDBLOCK)
-sleep(DELAYWARP)
-sleep(100)
-gscan(BLOCKID)
-AWALB = gscan(BLOCKID)
-
-while AWALB > 1 do
-    if inv:findItem(SEEDID) >= 1 then
-        if SAYING then
-        bot:say("OTW DROP SEED")
-        else
+function main()
+    for _, listWorld in ipairs(WORLDBLOCK) do
+        listWorld = listWorld:upper()
+        RBlock(listWorld)
+        sleep(7500)
+        while cekBlock() > 0 do
+            sleep(100)
+            if inv:findItem(BLOCKID) <= 0 then
+                if SAYING then
+                bot:say("OTW TAKE BLOCK")
+                else
+                end
+                RBlock(listWorld)
+                sleep(DELAYWARP)
+                takeBlock(listWorld)
+            end
+            if inv:findItem(SEEDID) >= 1 then
+                if SAYING then
+                bot:say("OTW DROP SEED")
+                else
+                end
+                RSeed(WORLDSEED)
+                sleep(DELAYWARP)
+                dropSeed()
+            end
+            sleep(100)
+            if inv:findItem(BLOCKID) >= 1 then
+                if SAYING then
+                bot:say("OTW PNB")
+                else
+                end
+                RBreak(WORLDBREAK)
+                sleep(DELAYWARP)
+                PNB()
+            end
+            if inv:findItem(BLOCKID) <= 0 then
+                if SAYING then
+                bot:say("OTW TAKE BLOCK")
+                else
+                end
+                RBlock(listWorld)
+                sleep(DELAYWARP)
+                takeBlock(listWorld)
+            end
         end
-        goesTo(WORLDSEED,IDWORLDSEED)
-        sleep(DELAYWARP)
-        sleep(300)
-        dropSeed()
-        sleep(100)
-    end
-    if inv:findItem(BLOCKID) <= 0 then
-        if SAYING then
-        bot:say("OTW TAKE BLOCK")
-        else
-        end
-        goesTo(WORLDBLOCK,IDWORLDBLOCK)
-        sleep(DELAYWARP)
-        sleep(300)
-        takeBlock()
-        sleep(100)
-        AWALB = gscan(BLOCKID)
-    end
-    if inv:findItem(BLOCKID) >= 1 then
-        if SAYING then
-        bot:say("OTW PNB")
-        else
-        end
-        sleep(300)
-        goesTo(WORLDBREAK,IDWORLDBREAK)
-        sleep(DELAYWARP)
-        PNB()
-        sleep(100)
-    end
-    --take gaut--
-    if USEGAUT then
-        if SAYING then
-        bot:say("OTW TAKE GAUT")
-        else
-        end
-        sleep(300)
-        --take gaia--
-        goGaia()
-        sleep(100)
-        retrieveGaia(math.floor(getLocal().posx/32),math.floor(getLocal().posy/32)+1,200)
-        sleep(100)
-        --take gaia--
-        --take ut--
-        goUT()
-        sleep(100)
-        retrieveUT(math.floor(getLocal().posx/32),math.floor(getLocal().posy/32)+1,200)
-        --take ut--
-    end
-    --take gaut--
-    if inv:findItem(SEEDID) >= 1 then
-        if SAYING then
-        bot:say("OTW DROP SEED")
-        else
-        end
-        goesTo(WORLDSEED,IDWORLDSEED)
-        sleep(DELAYWARP)
-        sleep(300)
-        dropSeed()
-        sleep(100)
-    end
-    if not USEGAUT then
-        if SAYING then
-        bot:say("TRASHING")
-        else
-        end
-        sleep(300)
-        trasher()
-        sleep(100)
-    end
-    if bot.gem_count >= PRICEPACK then
-        if SAYING then
-        bot:say("OTW DROP PACK")
-        else
-        end
-        sleep(300)
-        dropPack()
-        sleep(100)
     end
 end
-bot:warp(WORLDBLOCK)
-sleep(DELAYWARP)
-AWALB = gscan(BLOCKID)
-if AWALB == 0 then
-powershell("NO BLOCK LEFT, BOT DONE")
-sleep(300)
-    if inv:findItem(SEEDID) >=1 then
-        if SAYING then
-        bot:say("OTW DROP SEED")
-        else
+
+main()
+if cekBlock() == 0 then
+    powershell("NO BLOCK LEFT, BOT DONE")
+    sleep(300)
+        if inv:findItem(SEEDID) >=1 then
+            if SAYING then
+            bot:say("OTW DROP SEED")
+            else
+            end
+            goesTo(WORLDSEED,IDWORLDSEED)
+            sleep(DELAYWARP)
+            sleep(300)
+            dropSeed()
+            sleep(100)
         end
-        goesTo(WORLDSEED,IDWORLDSEED)
-        sleep(DELAYWARP)
-        sleep(300)
-        dropSeed()
-        sleep(100)
-    end
 bot:warp(WORLDBREAK)
 sleep(DELAYWARP)
-end
-
-elseif filer("C:\\Users\\"..username.."\\AppData\\Local\\false.txt") then
-    os.remove("C:\\Users\\"..username.."\\AppData\\Local\\false.txt")
-    powershell("HWID NOT FOUND / CONTACT ADMIN [ALFIRST-STORE] (https://linktr.ee/alfirst_store)")
+removeBot()
 end
