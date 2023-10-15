@@ -1,4 +1,4 @@
---16/10/2023:00:41
+--16/10/2023:03:58
 --------dont touch--------
 bot = getBot()
 world = bot:getWorld()
@@ -148,16 +148,6 @@ function gscan(id)
         end
     end
     return gs
-end
-
-function cekBlock(BLOCKID)
-    ab = 0
-    for _, obj in pairs(world:getObjects()) do
-        if obj.BLOCKID == BLOCKID then 
-            ab = ab + obj.count
-        end
-    end
-    return ab
 end
 
 function baris()
@@ -356,11 +346,9 @@ function goUT()
 end
 
 function takeBlock(listWorld)
-    RBlock(listWorld)
     if bot:isInWorld(listWorld) then
         goesTo(listWorld,IDWORLDBLOCK)
         AWALB = gscan(BLOCKID)
-        cekBlock()
         for _,al in pairs(world:getObjects()) do
             if al.id == BLOCKID then
                 xal = math.floor(al.x / 32)
@@ -600,32 +588,28 @@ function main()
     for _, listWorld in ipairs(WORLDBLOCK) do
         listWorld = listWorld:upper()
         RBlock(listWorld)
-        sleep(7500)
-        while cekBlock() > 0 do
-            sleep(100)
+        sleep(DELAYWARP)
+        AWALB = gscan(BLOCKID)
+        while AWALB > 0 do
             if inv:findItem(BLOCKID) <= 0 then
                 if SAYING then
-                bot:say("OTW TAKE BLOCK")
-                else
+                    bot:say("OTW TAKE BLOCK")
                 end
-                RBlock(listWorld)
+                goesTo(listWorld,IDWORLDBLOCK)
                 sleep(DELAYWARP)
                 takeBlock(listWorld)
             end
             if inv:findItem(SEEDID) >= 1 then
                 if SAYING then
-                bot:say("OTW DROP SEED")
-                else
+                    bot:say("OTW DROP SEED")
                 end
                 RSeed(WORLDSEED)
                 sleep(DELAYWARP)
                 dropSeed()
             end
-            sleep(100)
             if inv:findItem(BLOCKID) >= 1 then
                 if SAYING then
-                bot:say("OTW PNB")
-                else
+                    bot:say("OTW PNB")
                 end
                 RBreak(WORLDBREAK)
                 sleep(DELAYWARP)
@@ -633,33 +617,33 @@ function main()
             end
             if inv:findItem(BLOCKID) <= 0 then
                 if SAYING then
-                bot:say("OTW TAKE BLOCK")
-                else
+                    bot:say("OTW TAKE BLOCK")
                 end
-                RBlock(listWorld)
+                goesTo(listWorld,IDWORLDBLOCK)
                 sleep(DELAYWARP)
                 takeBlock(listWorld)
+            end
+        end
+        if AWALB == 0 then
+            powershell("NO BLOCK LEFT, BOT DONE")
+            sleep(300)
+        
+            if inv:findItem(SEEDID) >= 1 then
+                if SAYING then
+                    bot:say("OTW DROP SEED")
+                end
+                goesTo(WORLDSEED, IDWORLDSEED)
+                sleep(DELAYWARP)
+                sleep(300)
+                dropSeed()
+                sleep(100)
             end
         end
     end
 end
 
+
 main()
-if cekBlock() == 0 then
-    powershell("NO BLOCK LEFT, BOT DONE")
-    sleep(300)
-        if inv:findItem(SEEDID) >=1 then
-            if SAYING then
-            bot:say("OTW DROP SEED")
-            else
-            end
-            goesTo(WORLDSEED,IDWORLDSEED)
-            sleep(DELAYWARP)
-            sleep(300)
-            dropSeed()
-            sleep(100)
-        end
-bot:warp(WORLDBREAK)
-sleep(DELAYWARP)
+bot:leaveWorld()
+sleep(2000)
 removeBot()
-end
