@@ -649,7 +649,9 @@ while AWALB > 1 do
         sleep(100)
     end
 end
-
+bot:warp(WORLDBLOCK)
+sleep(DELAYWARP)
+AWALB = gscan(BLOCKID)
 if AWALB == 0 then
 powershell("NO BLOCK LEFT, BOT DONE")
 sleep(300)
