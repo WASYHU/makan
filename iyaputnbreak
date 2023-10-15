@@ -1,4 +1,4 @@
---14/10/2023:13:53
+--15/10/2023:14:28
 --------dont touch--------
 bot = getBot()
 world = bot:getWorld()
@@ -564,7 +564,7 @@ sleep(100)
 gscan(BLOCKID)
 AWALB = gscan(BLOCKID)
 
-while AWALB >= 1 do
+while AWALB > 1 do
     if inv:findItem(SEEDID) >= 1 then
         if SAYING then
         bot:say("OTW DROP SEED")
@@ -666,7 +666,6 @@ sleep(300)
     end
 bot:warp(WORLDBREAK)
 sleep(DELAYWARP)
-removeBot()
 end
 
 elseif filer("C:\\Users\\"..username.."\\AppData\\Local\\false.txt") then
