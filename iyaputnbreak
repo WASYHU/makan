@@ -588,7 +588,7 @@ function main()
     for _, listWorld in ipairs(WORLDBLOCK) do
         listWorld = listWorld:upper()
         RBlock(listWorld)
-        sleep(DELAYWARP)
+        sleep(10000)
         AWALB = gscan(BLOCKID)
         while AWALB > 0 do
             if inv:findItem(BLOCKID) <= 0 then
