@@ -1,4 +1,4 @@
---18/10/2023|13:19
+--18/10/2023|13.42
 --------dont touch--------
 bot = getBot()
 world = bot:getWorld()
@@ -746,6 +746,7 @@ function dropPickaxe()
 end
 
 if TAKE_PICKAXE then
+    sleep((INDEX_SLOT - 1) * 3000)
     findPickaxe()
     dropPickaxe()
 end
