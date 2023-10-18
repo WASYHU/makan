@@ -25,12 +25,29 @@ INDEX_SLOT = 0
 for _, bot_raw in pairs(getBots()) do
     table.insert(LIST_BOT,bot_raw.name)
 end
+
 for idx, botlist in pairs(LIST_BOT) do
     local nama_bot = bot.name
     if nama_bot:upper() == botlist:upper() then
         INDEX_SLOT = idx
         break
     end
+end
+
+function getMacAndRid(botList, index)
+    local result = {}
+    for i, bot in ipairs(botList) do
+        local mac, rid = string.match(bot, "([^|]+)|([^|]+)")
+        table.insert(result, {mac = mac, rid = rid})
+    end
+    return result[index]
+end
+
+local result = getMacAndRid(Bot_List, INDEX_SLOT)
+
+function randomChar()
+    local charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    return string.char(charset:byte(math.random(1, #charset)))
 end
 
 function punch(x,y)
@@ -207,6 +224,14 @@ end
 function RBreak(txt)
     if bot.status ~= 1 then
         powershell("Bot Disconnected, Try to connect in 15sec")
+        if bot.status == BotStatus.account_banned then
+            local randomStr = ""
+            for _ = 1, 10 do
+                randomStr = randomStr .. randomChar()
+            end
+            bot:updateBot(randomStr:upper(),result.mac,result.rid)
+            sleep(20*1000)
+        end
         while bot.status ~= 1 do
             bot:connect()
             bot.auto_reconnect = true
@@ -232,6 +257,14 @@ end
 function RBlock(txt)
     if bot.status ~= 1 then
         powershell("Bot Disconnected, Try to connect in 15sec")
+        if bot.status == BotStatus.account_banned then
+            local randomStr = ""
+            for _ = 1, 10 do
+                randomStr = randomStr .. randomChar()
+            end
+            bot:updateBot(randomStr:upper(),result.mac,result.rid)
+            sleep(20*1000)
+        end
         while bot.status ~= 1 do
             bot:connect()
             bot.auto_reconnect = true
@@ -257,6 +290,14 @@ end
 function RSeed(txt)
     if bot.status ~= 1 then
         powershell("Bot Disconnected, Try to connect in 15sec")
+        if bot.status == BotStatus.account_banned then
+            local randomStr = ""
+            for _ = 1, 10 do
+                randomStr = randomStr .. randomChar()
+            end
+            bot:updateBot(randomStr:upper(),result.mac,result.rid)
+            sleep(20*1000)
+        end
         while bot.status ~= 1 do
             bot:connect()
             bot.auto_reconnect = true
@@ -282,6 +323,14 @@ end
 function RPack(txt)
     if bot.status ~= 1 then
         powershell("Bot Disconnected, Try to connect in 15sec")
+        if bot.status == BotStatus.account_banned then
+            local randomStr = ""
+            for _ = 1, 10 do
+                randomStr = randomStr .. randomChar()
+            end
+            bot:updateBot(randomStr:upper(),result.mac,result.rid)
+            sleep(20*1000)
+        end
         while bot.status ~= 1 do
             bot:connect()
             bot.auto_reconnect = true
@@ -307,12 +356,23 @@ end
 function cekKoneksi()
     if bot.status ~= 1 then
         powershell("Bot Disconnected, Try to connect in 15sec")
+        if bot.status == BotStatus.account_banned then
+            local randomStr = ""
+            for _ = 1, 10 do
+                randomStr = randomStr .. randomChar()
+            end
+            bot:updateBot(randomStr:upper(),result.mac,result.rid)
+            sleep(20*1000)
+        end
         while bot.status ~= 1 do
             bot:connect()
             bot.auto_reconnect = true
             bot.reconnect_interval = 15
             sleep(15000)
         end
+    end
+    if bot.status == BotStatus.online then
+        bot.auto_reconnect = false
     end
     cekPos()
     currentWorld = tostring(world.name)
