@@ -1,4 +1,4 @@
---17/10/2023:03:34
+--18/10/2023-13:19
 --------dont touch--------
 bot = getBot()
 world = bot:getWorld()
@@ -134,6 +134,7 @@ function webhookDate()
 	local Current_Time_Webhook = Current_Time_GMT + Time_Difference_Webhook
 	return os.date("***%A, %B %d, %Y*** | ***%H:%M***", Current_Time_Webhook)
 end
+
 function powershell(message)
 	te = os.time() - t
 	local wh = Webhook.new(WEBHOOKLINK)
@@ -224,13 +225,15 @@ end
 function RBreak(txt)
     if bot.status ~= 1 then
         powershell("Bot Disconnected, Try to connect in 15sec")
-        if bot.status == BotStatus.account_banned then
-            local randomStr = ""
-            for _ = 1, 10 do
-                randomStr = randomStr .. randomChar()
+        if SWAP_ACC_IF_BAN then
+            if bot.status == BotStatus.account_banned then
+                local randomStr = ""
+                for _ = 1, 10 do
+                    randomStr = randomStr .. randomChar()
+                end
+                bot:updateBot(randomStr:upper(),result.mac,result.rid)
+                sleep(20*1000)
             end
-            bot:updateBot(randomStr:upper(),result.mac,result.rid)
-            sleep(20*1000)
         end
         while bot.status ~= 1 do
             bot:connect()
@@ -257,13 +260,15 @@ end
 function RBlock(txt)
     if bot.status ~= 1 then
         powershell("Bot Disconnected, Try to connect in 15sec")
-        if bot.status == BotStatus.account_banned then
-            local randomStr = ""
-            for _ = 1, 10 do
-                randomStr = randomStr .. randomChar()
+        if SWAP_ACC_IF_BAN then
+            if bot.status == BotStatus.account_banned then
+                local randomStr = ""
+                for _ = 1, 10 do
+                    randomStr = randomStr .. randomChar()
+                end
+                bot:updateBot(randomStr:upper(),result.mac,result.rid)
+                sleep(20*1000)
             end
-            bot:updateBot(randomStr:upper(),result.mac,result.rid)
-            sleep(20*1000)
         end
         while bot.status ~= 1 do
             bot:connect()
@@ -290,13 +295,15 @@ end
 function RSeed(txt)
     if bot.status ~= 1 then
         powershell("Bot Disconnected, Try to connect in 15sec")
-        if bot.status == BotStatus.account_banned then
-            local randomStr = ""
-            for _ = 1, 10 do
-                randomStr = randomStr .. randomChar()
+        if SWAP_ACC_IF_BAN then
+            if bot.status == BotStatus.account_banned then
+                local randomStr = ""
+                for _ = 1, 10 do
+                    randomStr = randomStr .. randomChar()
+                end
+                bot:updateBot(randomStr:upper(),result.mac,result.rid)
+                sleep(20*1000)
             end
-            bot:updateBot(randomStr:upper(),result.mac,result.rid)
-            sleep(20*1000)
         end
         while bot.status ~= 1 do
             bot:connect()
@@ -323,13 +330,15 @@ end
 function RPack(txt)
     if bot.status ~= 1 then
         powershell("Bot Disconnected, Try to connect in 15sec")
-        if bot.status == BotStatus.account_banned then
-            local randomStr = ""
-            for _ = 1, 10 do
-                randomStr = randomStr .. randomChar()
+        if SWAP_ACC_IF_BAN then
+            if bot.status == BotStatus.account_banned then
+                local randomStr = ""
+                for _ = 1, 10 do
+                    randomStr = randomStr .. randomChar()
+                end
+                bot:updateBot(randomStr:upper(),result.mac,result.rid)
+                sleep(20*1000)
             end
-            bot:updateBot(randomStr:upper(),result.mac,result.rid)
-            sleep(20*1000)
         end
         while bot.status ~= 1 do
             bot:connect()
@@ -356,13 +365,15 @@ end
 function cekKoneksi()
     if bot.status ~= 1 then
         powershell("Bot Disconnected, Try to connect in 15sec")
-        if bot.status == BotStatus.account_banned then
-            local randomStr = ""
-            for _ = 1, 10 do
-                randomStr = randomStr .. randomChar()
+        if SWAP_ACC_IF_BAN then
+            if bot.status == BotStatus.account_banned then
+                local randomStr = ""
+                for _ = 1, 10 do
+                    randomStr = randomStr .. randomChar()
+                end
+                bot:updateBot(randomStr:upper(),result.mac,result.rid)
+                sleep(20*1000)
             end
-            bot:updateBot(randomStr:upper(),result.mac,result.rid)
-            sleep(20*1000)
         end
         while bot.status ~= 1 do
             bot:connect()
