@@ -1,0 +1,148 @@
+list_guest = {
+    "d1:2a:75:97:b6:80|07ED12387F78D6E5FAA15E65F06BEA02",
+    "02:ca:bd:c0:43:e5|A69E32FF3B341F7A6F99D7766D1C51B4",
+    "a4:b6:b7:e8:ae:f9|D393B09B8917DFCA5C5117D08DD662A6",
+    "07:11:91:88:ec:65|2B128E45781BD12748131F204113D9A2",
+    "34:9c:6b:50:d7:3f|3A5A7BF23EE1356C9D2E07EE932770B2",
+    "25:f7:7b:d5:c4:91|8D09A6C62C1583EA38B49B568A082ECB",
+    "1a:59:7e:6c:64:bb|81D9304442583FCE68D23748CF44B5B5",
+    "13:7e:15:62:d9:6b|B061502E4544498E0FD01C0A70C7A33C",
+    "96:9d:3f:1c:d5:42|9D5DDCDA4E104A2F80C17ABBAD8190FB",
+    "90:a3:03:81:33:88|AABE6CB649D6C380FE1F371504D2D7C5",
+    "86:15:ed:a5:b1:6d|CC59F6B23EE873F6B5C88099EA16D4A0",
+    "55:6d:10:62:31:78|2C30ECE2DB78676EFE4B8C8DA55FBEBE",
+    "f0:ad:f4:7f:b2:bd|46C5D01D6D90426F05C1FEA47AF54B7E",
+    "e7:94:84:a1:a7:1b|A68F32AAE93BE7AB26C2B138CEBF5D1C",
+    "1a:ae:e6:86:5f:c6|4402DC9EE083D809761B142FA5983344",
+    "77:e8:95:ab:b5:ad|F4BF033DA9C5081F1FB9B47771847752",
+    "c8:aa:f2:82:ed:01|BD08CB6FC635933D3D09D9608624EE3D",
+    "bd:54:8d:30:fd:bb|581897B871CDD78D41F9E2D20102F445",
+    "3e:63:52:a3:7b:73|7B5B85B19FB6DDC1FFE680A0899A1475",
+}
+
+list_email = {
+    "devozagabeyg@hotmail.com:vDGQmQq71",
+    "saainwadadaf@hotmail.com:WXRhnJ772",
+    "raslfuenesc@hotmail.com:9IoZMoY87",
+    "luftimnapare9@hotmail.com:YhaSsiN40",
+    "atulebcrh@hotmail.com:5TQnb6429",
+    "habayostrohp@hotmail.com:IGbShH724",
+    "buczaksuguev@hotmail.com:mVcxRAi25",
+    "izikmalathx@hotmail.com:zE1W8SD40",
+    "ayissiquadri1@hotmail.com:GX55MgI17",
+    "atencoparakp@hotmail.com:Zg5ugiV04",
+    "calidoafaac@hotmail.com:pu8ZWG364",
+    "bagmanabhaya0@hotmail.com:ZS0dx7m08",
+    "gijangrompa4@hotmail.com:3FEzlgv54",
+    "nvumbonaam0@hotmail.com:xWJQSsS04",
+    "asmerisarajo4@hotmail.com:90hErY338",
+    "ghaisiqwekhuo@hotmail.com:t6LKEG010",
+    "joppiemanpuib@hotmail.com:o4qyeum35",
+    "nyzamremartf@hotmail.com:uPVsS6208",
+    "cyndytweeb@hotmail.com:Wm5xCB575",
+}
+
+Webhook_link = "https://discord.com/api/webhooks/1162443914075181198/FDClEQeRBE_afb3vzYYzF_Jo2dsmCmkpaziGRhAFPU1HYvdY4n78EyPArwWnRF6J2lEc"
+delay = 20 --detik
+
+--dont touch bitch--
+local setPasswordCid = "Qazpoi123."
+local separatorGuest = "|"
+local separatorEmail = ":"
+local macs = {}
+local rids = {}
+local emails = {}
+local passwords = {}
+function randomChar()
+    local charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    return string.char(charset:byte(math.random(1, #charset)))
+end
+
+for _, input in ipairs(list_guest) do
+    local temp_mac, temp_rid = string.match(input, "(.-)" .. separatorGuest .. "(.+)")
+    if temp_mac and temp_rid then
+        table.insert(macs, temp_mac)
+        table.insert(rids, temp_rid)
+    end
+end
+
+for _, input in ipairs(list_email) do
+    local temp_email, temp_password = string.match(input, "(.-)".. separatorEmail .."(.+)")
+    if temp_email and temp_password then
+        table.insert(emails, temp_email)
+        table.insert(passwords, temp_password)
+    end
+end
+
+function webhookDate()
+	local Time_Difference_Webhook = 7 * 3600
+	local Current_Time_GMT = os.time(os.date("!*t"))
+	local Current_Time_Webhook = Current_Time_GMT + Time_Difference_Webhook
+	return os.date("***%A, %B %d, %Y*** | ***%H:%M***", Current_Time_Webhook)
+end
+
+function powershell(message)
+	local wh = Webhook.new(Webhook_link)
+	wh.username = "[ALFIRST-STORE]"
+	wh.avatar_url = "https://mystickermania.com/cdn/stickers/anime/jujutsu-kaisen-satoru-gojo-512x512.png"
+	wh.embed1.use = true
+	wh.embed1.title = "CV GUEST TO CID LOGS!"
+	wh.embed1.description = "<:mp:996717372574539846> **|** Information : \n ***"..message.."***"..
+	"\n\n"..webhookDate()
+	wh.embed1.color = math.random(1000000,9999999)
+	wh.embed1.thumbnail = "https://cdn.growtopia.tech/items/32.png"
+	wh:send()
+end
+
+for i = 1, #macs do
+    local randomStr = ""
+    for _= 1, 10 do
+        randomStr = randomStr .. randomChar()
+    end
+    addBot(randomStr:upper(),macs[i],rids[i])
+    sleep(delay*1000)
+    powershell("Processing\nMAC = "..macs[i].."\nRID = "..rids[i].."\nEMAIL = "..emails[i])
+    	if getBot(randomStr:upper()).status ~= 1 then
+		while getBot(randomStr:upper()).status ~= 1 do
+			getBot(randomStr:upper()):connect()
+			sleep(delay*1000)
+		end
+	end
+	if getBot(randomStr:upper()).status == 1 then
+        while getBot(randomStr:upper()):getWorld().name:find("TUTORIAL") ~= nil do
+            if getBot(randomStr:upper()).collect_range ~= 3 then
+                getBot(randomStr:upper()).collect_range = 3
+            end
+            if getBot(randomStr:upper()).auto_collect == false then
+                getBot(randomStr:upper()).auto_collect = true
+            end
+            if getBot(randomStr:upper()).auto_tutorial == false then
+                getBot(randomStr:upper()).auto_tutorial = true
+            end
+            if getBot(randomStr:upper()).auto_reconnect == false then
+                getBot(randomStr:upper()).auto_reconnect = true
+            end
+            sleep(20000)
+        end
+            getBot(randomStr:upper()):sendPacket(2, "action|growid")
+            sleep(3000)
+            getBot(randomStr:upper()):sendPacket(2, "action|dialog_return\ndialog_name|growid_apply\nlogon|"..randomStr:upper().."\npassword|"..setPasswordCid.."\npassword_verify|"..setPasswordCid.."\nemail|"..emails[i])
+            sleep(400)
+            getBot(randomStr:upper()):sendPacket(2, "action|growid")
+            sleep(400)
+            getBot(randomStr:upper()):sendPacket(2, "action|dialog_return\ndialog_name|growid_apply\nlogon|"..randomStr:upper().."\npassword|"..setPasswordCid.."\npassword_verify|"..setPasswordCid.."\nemail|"..emails[i])
+            sleep(4000)
+            getBot(randomStr:upper()):updateBot(randomStr:upper(),setPasswordCid)
+        sleep(delay*1000)
+    end
+    if getBot(randomStr:upper()).status == 6 then
+        powershell("CID Need AAP!!\nGrowID = "..randomStr:upper().."\nPassword = ||"..setPasswordCid.."||\n SAVED AT AAP.txt")
+        local file = io.open("AAP.txt", "a")
+        if file then
+        file:write([["]]..randomStr:upper()..[[|]]..setPasswordCid..[[",
+]])
+            file:close()
+        end
+    end
+    removeBot(randomStr:upper())
+end
