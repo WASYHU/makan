@@ -1,4 +1,4 @@
---19/10/2023|01.53
+--19/10/2023|12.50
 --------dont touch--------
 bot = getBot()
 world = bot:getWorld()
@@ -226,9 +226,9 @@ end
 function RBreak(txt)
     if bot.status ~= 1 then
         powershell("Bot Disconnected, Try to connect in 15sec")
-        if SWAP_ACC_IF_BAN then
-            if CID_OR_GUEST == "GUEST" then
-                if bot.status == BotStatus.account_banned then
+        if bot.status == BotStatus.account_banned then
+            if SWAP_ACC_IF_BAN then
+                if CID_OR_GUEST == "GUEST" then
                     local randomStr = ""
                     for _ = 1, 10 do
                         randomStr = randomStr .. randomChar()
@@ -236,9 +236,7 @@ function RBreak(txt)
                     bot:updateBot(randomStr:upper(),result.mac,result.rid)
                     sleep(20*1000)
                 end
-            end
-            if CID_OR_GUEST == "CID" then
-                if bot.status == BotStatus.account_banned then
+                if CID_OR_GUEST == "CID" then
                     bot:updateBot(result.mac,result.rid)
                     sleep(20*1000)
                 end
@@ -269,9 +267,9 @@ end
 function RBlock(txt)
     if bot.status ~= 1 then
         powershell("Bot Disconnected, Try to connect in 15sec")
-        if SWAP_ACC_IF_BAN then
-            if CID_OR_GUEST == "GUEST" then
-                if bot.status == BotStatus.account_banned then
+        if bot.status == BotStatus.account_banned then
+            if SWAP_ACC_IF_BAN then
+                if CID_OR_GUEST == "GUEST" then
                     local randomStr = ""
                     for _ = 1, 10 do
                         randomStr = randomStr .. randomChar()
@@ -279,9 +277,7 @@ function RBlock(txt)
                     bot:updateBot(randomStr:upper(),result.mac,result.rid)
                     sleep(20*1000)
                 end
-            end
-            if CID_OR_GUEST == "CID" then
-                if bot.status == BotStatus.account_banned then
+                if CID_OR_GUEST == "CID" then
                     bot:updateBot(result.mac,result.rid)
                     sleep(20*1000)
                 end
@@ -312,9 +308,9 @@ end
 function RSeed(txt)
     if bot.status ~= 1 then
         powershell("Bot Disconnected, Try to connect in 15sec")
-        if SWAP_ACC_IF_BAN then
-            if CID_OR_GUEST == "GUEST" then
-                if bot.status == BotStatus.account_banned then
+        if bot.status == BotStatus.account_banned then
+            if SWAP_ACC_IF_BAN then
+                if CID_OR_GUEST == "GUEST" then
                     local randomStr = ""
                     for _ = 1, 10 do
                         randomStr = randomStr .. randomChar()
@@ -322,9 +318,7 @@ function RSeed(txt)
                     bot:updateBot(randomStr:upper(),result.mac,result.rid)
                     sleep(20*1000)
                 end
-            end
-            if CID_OR_GUEST == "CID" then
-                if bot.status == BotStatus.account_banned then
+                if CID_OR_GUEST == "CID" then
                     bot:updateBot(result.mac,result.rid)
                     sleep(20*1000)
                 end
@@ -355,9 +349,9 @@ end
 function RPack(txt)
     if bot.status ~= 1 then
         powershell("Bot Disconnected, Try to connect in 15sec")
-        if SWAP_ACC_IF_BAN then
-            if CID_OR_GUEST == "GUEST" then
-                if bot.status == BotStatus.account_banned then
+        if bot.status == BotStatus.account_banned then
+            if SWAP_ACC_IF_BAN then
+                if CID_OR_GUEST == "GUEST" then
                     local randomStr = ""
                     for _ = 1, 10 do
                         randomStr = randomStr .. randomChar()
@@ -365,9 +359,7 @@ function RPack(txt)
                     bot:updateBot(randomStr:upper(),result.mac,result.rid)
                     sleep(20*1000)
                 end
-            end
-            if CID_OR_GUEST == "CID" then
-                if bot.status == BotStatus.account_banned then
+                if CID_OR_GUEST == "CID" then
                     bot:updateBot(result.mac,result.rid)
                     sleep(20*1000)
                 end
@@ -398,9 +390,9 @@ end
 function cekKoneksi()
     if bot.status ~= 1 then
         powershell("Bot Disconnected, Try to connect in 15sec")
-        if SWAP_ACC_IF_BAN then
-            if CID_OR_GUEST == "GUEST" then
-                if bot.status == BotStatus.account_banned then
+        if bot.status == BotStatus.account_banned then
+            if SWAP_ACC_IF_BAN then
+                if CID_OR_GUEST == "GUEST" then
                     local randomStr = ""
                     for _ = 1, 10 do
                         randomStr = randomStr .. randomChar()
@@ -408,9 +400,7 @@ function cekKoneksi()
                     bot:updateBot(randomStr:upper(),result.mac,result.rid)
                     sleep(20*1000)
                 end
-            end
-            if CID_OR_GUEST == "CID" then
-                if bot.status == BotStatus.account_banned then
+                if CID_OR_GUEST == "CID" then
                     bot:updateBot(result.mac,result.rid)
                     sleep(20*1000)
                 end
@@ -796,4 +786,8 @@ end
 main()
 bot:leaveWorld()
 sleep(2000)
+if AFTER_DONE_REMOVEBOT then
 removeBot()
+else
+    bot:disconnect()
+end
