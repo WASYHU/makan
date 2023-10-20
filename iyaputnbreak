@@ -222,6 +222,47 @@ function goesTo(a,b)
     end
 end
 
+function RPick(txt)
+    if bot.status ~= 1 then
+        powershell("Bot Disconnected, Try to connect in 15sec")
+        if bot.status == BotStatus.account_banned then
+            if SWAP_ACC_IF_BAN then
+                if CID_OR_GUEST == "GUEST" then
+                    local randomStr = ""
+                    for _ = 1, 10 do
+                        randomStr = randomStr .. randomChar()
+                    end
+                    bot:updateBot(randomStr:upper(),result.mac,result.rid)
+                    sleep(20*1000)
+                end
+                if CID_OR_GUEST == "CID" then
+                    bot:updateBot(result.mac,result.rid)
+                    sleep(20*1000)
+                end
+            end
+        end
+        while bot.status ~= 1 do
+            bot:connect()
+            bot.auto_reconnect = true
+            bot.reconnect_interval = 15
+            sleep(15000)
+        end
+    end
+    if bot.status == BotStatus.online then
+        bot.auto_reconnect = false
+    end
+    if world.name ~= txt then
+        goesTo(txt,IDWORLDPICKAXE)
+    end
+    cekPos()
+    currentWorld = tostring(world.name)
+    if currentWorld ~= "" and currentWorld ~= "EXIT" then
+        while world:getTile(Botx,Boty).fg == 6 do
+            goesTo(txt,IDWORLDPICKAXE)
+        end
+    end
+end
+
 function RBreak(txt)
     if bot.status ~= 1 then
         powershell("Bot Disconnected, Try to connect in 15sec")
@@ -746,32 +787,14 @@ function main()
     end
 end
 
-function findPickaxe()
+function takePickaxe()
     sleep(3000)
-    bot:warp(WORLDPICKAXE, IDWORLDPICKAXE)
+    RPick(WORLDPICKAXE)
     sleep(3000)
-    while inv:getItemCount(98) < 1 do
-        for _, object in pairs(world:getObjects()) do
-            if object.id == 98 then
-                bot:findPath(math.floor((object.x + 10) / 32), math.floor((object.y + 10) / 32))
-                sleep(1000)
-                bot:collect(3)
-                sleep(1000)
-                bot:wear(98)
-                sleep(1000)
-            end
-        end
-    end
-end
-
-function dropPickaxe()
-    sleep(1500)
-    bot:warp(WORLDPICKAXE, IDWORLDPICKAXE)
+    bot:collect(3)
     sleep(1000)
     while inv:getItemCount(98) > 1 do
-        bot:sendPacket(2, "action|drop\n|itemID|98")
-        sleep(500)
-        bot:sendPacket(2, "action|dialog_return\ndialog_name|drop_item\nitemID|98|\ncount|" .. inv:getItemCount(98) - 1)
+        bot:fastDrop(98,inv:getItemCount(98) - 1)
         sleep(1000)
         break
     end
@@ -779,9 +802,9 @@ end
 
 if TAKE_PICKAXE then
     sleep((INDEX_SLOT - 1) * 3000)
-    findPickaxe()
-    dropPickaxe()
+    takePickaxe()
 end
+sleep((INDEX_SLOT - 1) * 1000)
 main()
 bot:leaveWorld()
 sleep(2000)
