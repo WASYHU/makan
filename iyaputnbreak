@@ -801,8 +801,11 @@ function takePickaxe()
 end
 
 if TAKE_PICKAXE then
+    if inv:getItemCount(98) < 1 then
     sleep((INDEX_SLOT - 1) * 3000)
     takePickaxe()
+    else
+    end
 end
 sleep((INDEX_SLOT - 1) * 1000)
 main()
