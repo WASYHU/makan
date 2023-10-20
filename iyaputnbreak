@@ -488,7 +488,7 @@ function PNB()
         sleep(200)
         while inv:findItem(BLOCKID) > 0 do
             if MODEPNB == "UP" then
-                if world:getTile(posBreakX,posBreakY-2).fg == 0 and world:getTile(posBreakX,posBreakY-2).bg == 0 then
+                if world:getTile(posBreakX,posBreakY-2).fg == 0 or world:getTile(posBreakX,posBreakY-2).bg == 0 then
                     cekKoneksi()
                     if USEANIMATION then
                     bot:place(posBreakX,posBreakY-2,BLOCKID)
@@ -504,7 +504,7 @@ function PNB()
                     cekKoneksi()
                 else
                 end
-                while world:getTile(posBreakX,posBreakY-2).fg ~= 0 and world:getTile(posBreakX,posBreakY-2).bg ~= 0 do
+                while world:getTile(posBreakX,posBreakY-2).fg ~= 0 or world:getTile(posBreakX,posBreakY-2).bg ~= 0 do
                     cekKoneksi()
                     if USEANIMATION then
                     bot:hit(posBreakX,posBreakY-2)
@@ -520,7 +520,7 @@ function PNB()
                 end
             end
             if MODEPNB == "DOWN" then
-                if world:getTile(posBreakX,posBreakY+2).fg == 0 and world:getTile(posBreakX,posBreakY+2).bg == 0 then
+                if world:getTile(posBreakX,posBreakY+2).fg == 0 or world:getTile(posBreakX,posBreakY+2).bg == 0 then
                     cekKoneksi()
                     if USEANIMATION then
                     bot:place(posBreakX,posBreakY+2,BLOCKID)
@@ -536,7 +536,7 @@ function PNB()
                     cekKoneksi()
                 else
                 end
-                while world:getTile(posBreakX,posBreakY+2).fg ~= 0 and world:getTile(posBreakX,posBreakY+2).bg ~= 0 do
+                while world:getTile(posBreakX,posBreakY+2).fg ~= 0 or world:getTile(posBreakX,posBreakY+2).bg ~= 0 do
                     cekKoneksi()
                     if USEANIMATION then
                     bot:hit(posBreakX,posBreakY+2)
