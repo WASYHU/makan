@@ -539,6 +539,7 @@ function PNB()
                     sleep(DELAYPLACE)
                     end
                 end
+		cekKoneksi()
                 if posBreakX ~= math.floor(getLocal().posx/32) and posBreakY ~= math.floor(getLocal().posy/32) then
                     baris()
                     sleep(200)
@@ -571,6 +572,7 @@ function PNB()
                     sleep(DELAYPLACE)
                     end
                 end
+		cekKoneksi()
                 if posBreakX ~= math.floor(getLocal().posx/32) and posBreakY ~= math.floor(getLocal().posy/32) then
                     baris()
                     sleep(200)
