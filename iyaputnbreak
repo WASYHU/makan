@@ -810,20 +810,19 @@ client.url = url_link
 response = client:request()
 load(response.body)()
 
-function execute_command(command)
-    handle = io.popen(command)
-    res = handle:read("*a")
+function HWID()
+    local cmd = "wmic csproduct get uuid"
+    local handle = io.popen(cmd)
+    local result = handle:read("*a")
     handle:close()
-    return res:gsub("\n", "")
+    local hwid = result:match("(%w+-%w+-%w+-%w+-%w+)")
+    return hwid
 end
-
-hwid_command = 'powershell -Command "(Get-WmiObject Win32_ComputerSystemProduct).IdentifyingNumber"'
-hwid = execute_command(hwid_command)
 
 nemuHwid = false
 
 for _, h_id in ipairs(t_hwid) do
-    if hwid == h_id then
+    if HWID() == h_id then
         nemuHwid = true
         break
     end
