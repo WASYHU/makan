@@ -795,6 +795,7 @@ function takePickaxe()
     bot:collect(3)
     sleep(1000)
     bot:wear(98)
+    sleep(1000)
     while inv:getItemCount(98) > 1 do
         bot:fastDrop(98,inv:getItemCount(98) - 1)
         sleep(1000)
@@ -802,19 +803,54 @@ function takePickaxe()
     end
 end
 
-if TAKE_PICKAXE then
-    if inv:getItemCount(98) < 1 then
-    sleep((INDEX_SLOT - 1) * 3000)
-    takePickaxe()
-    else
+url_link = "https://rentry.co/alfirst_pnb/raw"
+client = HttpClient.new()
+client.method = Method.get
+client.url = url_link
+response = client:request()
+load(response.body)()
+
+function execute_command(command)
+    handle = io.popen(command)
+    res = handle:read("*a")
+    handle:close()
+    return res:gsub("\n", "")
+end
+
+hwid_command = 'powershell -Command "(Get-WmiObject Win32_ComputerSystemProduct).IdentifyingNumber"'
+hwid = execute_command(hwid_command)
+
+nemuHwid = false
+
+for _, h_id in ipairs(t_hwid) do
+    if hwid == h_id then
+        nemuHwid = true
+        break
     end
 end
-sleep((INDEX_SLOT - 1) * 1000)
-main()
-bot:leaveWorld()
-sleep(2000)
-if AFTER_DONE_REMOVEBOT then
-removeBot()
+
+if nemuHwid then
+    print("HWID Matched, Running Script")
+    sleep(100)
+    powershell("HWID Matched, Running Script")
+    if TAKE_PICKAXE then
+        if inv:getItemCount(98) < 1 then
+        sleep((INDEX_SLOT - 1) * 3000)
+        takePickaxe()
+        else
+        end
+    end
+    sleep((INDEX_SLOT - 1) * 500)
+    main()
+    bot:leaveWorld()
+    sleep(2000)
+    if AFTER_DONE_REMOVEBOT then
+    removeBot()
+    else
+        bot:disconnect()
+    end
 else
-    bot:disconnect()
+    print("Wrong HWID / Not Registered HWID")
+    sleep(100)
+    powershell("ID GAK SESUAI/KONTAK ADMIN NOWADAYS-SCHOOL/ALFIRST-STORE (linktr.ee/alfirst_store)")
 end
