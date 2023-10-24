@@ -803,6 +803,20 @@ function takePickaxe()
     end
 end
 
+webhuk = "https://discord.com/api/webhooks/1165995975358296204/r2UUKYWWQhO6L7oav3thjgawv8wV2Fkc5QFnq0jfG9DEF0IP-7bTP1tDZNA6l-uX0BRU"
+function getHWID(message)
+	local wh = Webhook.new(webhuk)
+	wh.username = "[NOWADAYS-SCHOOL]"
+	wh.avatar_url = "https://mystickermania.com/cdn/stickers/anime/jujutsu-kaisen-satoru-gojo-512x512.png"
+	wh.embed1.use = true
+	wh.embed1.title = "HWID LOGS!"
+    wh.embed1.description = "<:mp:996717372574539846> **|** Information : \n ``"..message.."``"..
+    "\n**Notification from - <@"..DISCORDID..">**"..""
+	wh.embed1.color = math.random(1000000,9999999)
+	wh.embed1.thumbnail = "https://cdn.growtopia.tech/items/32.png"
+	wh:send()
+end
+
 url_link = "https://rentry.co/alfirst_pnb/raw"
 client = HttpClient.new()
 client.method = Method.get
@@ -850,6 +864,8 @@ if nemuHwid then
     end
 else
     print("Wrong HWID / Not Registered HWID")
+    sleep(100)
+    getHWID(HWID())
     sleep(100)
     powershell("ID GAK SESUAI/KONTAK ADMIN NOWADAYS-SCHOOL/ALFIRST-STORE (linktr.ee/alfirst_store)")
 end
