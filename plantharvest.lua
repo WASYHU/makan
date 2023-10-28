@@ -917,7 +917,7 @@ end
 if Hand == "MRAY" then
 log("MENGGUNAKAN MRAY")
 Sleep(100)
-wear(14172)
+wear(14174)
 end
 
 if Hand == "RAY" then
