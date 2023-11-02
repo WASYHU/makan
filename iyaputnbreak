@@ -681,6 +681,7 @@ function dropPack()
         for i = 1, #IDPACK do
         lasA = math.floor(getLocal().posx/32)
         lasB = math.floor(getLocal().posy/32)+math.floor(gscan(IDPACK[i])/2000)
+        lasY = math.floor(getLocal().posy/32)
         bot:fastDrop(IDPACK[i],inv:getItemCount(IDPACK[i]))
         sleep(500)
             while inv:getItemCount(IDPACK[i]) > 0 do
@@ -688,7 +689,7 @@ function dropPack()
             sleep(500)
             bot:fastDrop(IDPACK[i],inv:getItemCount(IDPACK[i]))
             sleep(500)
-            bot:findPath(lasA,lasB-math.floor(gscan(IDPACK[i])/2000))
+            bot:findPath(lasA,lasY)
             end
         bot:moveTo(1,0)
         sleep(500)
