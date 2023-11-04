@@ -2,16 +2,53 @@
 bot = getBot()
 world = bot:getWorld()
 inv = bot:getInventory()
+--------dont touch--------
+--------PNB_SET--------
+BLOCKID = CONFIG.PNB_SET.BLOCKID
 SEEDID = BLOCKID+1
-WORLDBREAK = WORLDBREAK:upper()
-IDWORLDBREAK = IDWORLDBREAK:upper()
-IDWORLDBLOCK = IDWORLDBLOCK:upper()
-WORLDSEED = WORLDSEED:upper()
-IDWORLDSEED = IDWORLDSEED:upper()
-WORLDPACK = WORLDPACK:upper()
-IDWORLDPACK = IDWORLDPACK:upper()
-MODEPNB = MODEPNB:upper()
-CID_OR_GUEST = CID_OR_GUEST:upper()
+PATOKAN = CONFIG.PNB_SET.PATOKAN
+MODEPNB = CONFIG.PNB_SET.MODE_PNB:upper()
+USEANIMATION = CONFIG.PNB_SET.USE_ANIMATION
+SAYING = CONFIG.PNB_SET.SAYING
+--------WORLD_SET--------
+WORLDBLOCK = CONFIG.WORLD_SET.WORLD_BLOCK
+IDWORLDBLOCK = CONFIG.WORLD_SET.ID_WORLD_BLOCK:upper()
+WORLDBREAK = CONFIG.WORLD_SET.WORLD_BREAK:upper()
+IDWORLDBREAK = CONFIG.WORLD_SET.ID_WORLD_BREAK:upper()
+WORLDSEED = CONFIG.WORLD_SET.WORLD_SEED:upper()
+IDWORLDSEED = CONFIG.WORLD_SET.ID_WORLD_SEED:upper()
+WORLDPACK = CONFIG.WORLD_SET.WORLD_PACK:upper()
+IDWORLDPACK = CONFIG.WORLD_SET.ID_WORLD_PACK:upper()
+--------GAUT_SET--------
+USEGAUT = CONFIG.GAUT_SET.USE_GAUT
+RETRIEVEGAUT = CONFIG.GAUT_SET.RETRIEVE_GAUT
+--------PACK_SET--------
+NAMEPACK = CONFIG.PACK_SET.NAME_PACK
+IDPACK = CONFIG.PACK_SET.ID_PACK
+PRICEPACK = CONFIG.PACK_SET.PRICE_PACK
+--------DELAY_SET--------
+DELAYWARP = CONFIG.DELAY_SET.DELAY_WARP
+DELAYBUYPACK = CONFIG.DELAY_SET.DELAY_BUY_PACK
+DELAYBREAK = CONFIG.DELAY_SET.DELAY_BREAK
+DELAYPLACE = CONFIG.DELAY_SET.DELAY_PLACE
+--------WEBHOOK_SET--------
+USE_WEBHOOK = CONFIG.WEBHOOK_SET.USE_WEBHOOK
+WEBHOOK_SEED = CONFIG.WEBHOOK_SET.WEBHOOK_SEED
+WEBHOOK_PACK = CONFIG.WEBHOOK_SET.WEBHOOK_PACK
+WEBHOOK_BLOCK = CONFIG.WEBHOOK_SET.WEBHOOK_BLOCK
+WEBHOOK_INFORMATION = CONFIG.WEBHOOK_SET.WEBHOOK_INFORMATION
+DISCORDID = CONFIG.WEBHOOK_SET.DISCORD_ID
+--------OPTIONAL_SET--------
+AFTER_DONE_REMOVEBOT = CONFIG.OPTIONAL_SET.AFTER_DONE_REMOVEBOT
+TAKE_PICKAXE = CONFIG.OPTIONAL_SET.TAKE_PICKAXE
+WORLDPICKAXE = CONFIG.OPTIONAL_SET.WORLD_PICKAXE:upper()
+IDWORLDPICKAXE = CONFIG.OPTIONAL_SET.ID_WORLD_PICKAXE:upper()
+SWAP_ACC_IF_LEVEL = CONFIG.OPTIONAL_SET.SWAP_ACC_IF_LEVEL
+MAX_LEVEL = CONFIG.OPTIONAL_SET.MAX_LEVEL
+SWAP_ACC_IF_BAN = CONFIG.SWAP_ACC_IF_BAN
+CID_OR_GUEST = CONFIG.OPTIONAL_SET.CID_OR_GUEST:upper()
+BOT_LIST = CONFIG.OPTIONAL_SET.BOT_LIST
+-----------------------------
 t = os.time()
 bot.auto_trash = false
 bot.move_interval = 275
@@ -43,7 +80,7 @@ function getMacAndRid(botList, index)
     return result[index]
 end
 
-local result = getMacAndRid(Bot_List, INDEX_SLOT)
+local result = getMacAndRid(BOT_LIST, INDEX_SLOT)
 
 function randomChar()
     local charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -135,9 +172,9 @@ function webhookDate()
 	return os.date("***%A, %B %d, %Y*** | ***%H:%M***", Current_Time_Webhook)
 end
 
-function powershell(message)
+function powershell(message,link)
 	te = os.time() - t
-	local wh = Webhook.new(WEBHOOKLINK)
+	local wh = Webhook.new(link)
 	wh.username = "[ALFIRST-STORE]"
 	wh.avatar_url = "https://mystickermania.com/cdn/stickers/anime/jujutsu-kaisen-satoru-gojo-512x512.png"
 	wh.embed1.use = true
@@ -154,7 +191,7 @@ function powershell(message)
 	"\n**Notification for - <@"..DISCORDID..">**"..
 	"\n\n"..webhookDate()
 	wh.embed1.color = math.random(1000000,9999999)
-	wh.embed1.thumbnail = "https://cdn.growtopia.tech/items/18.png"
+	wh.embed1.thumbnail = "https://cdn.growtopia.tech/items/"..BLOCKID..".png"
 	wh:send()
 end
 
@@ -224,7 +261,9 @@ end
 
 function RPick(txt)
     if bot.status ~= 1 then
-        powershell("Bot Disconnected, Try to connect in 15sec")
+        if USE_WEBHOOK then
+        powershell("Bot Disconnected, Try to connect in 15sec",WEBHOOK_INFORMATION)
+        end
         if bot.status == BotStatus.account_banned then
             if SWAP_ACC_IF_BAN then
                 if CID_OR_GUEST == "GUEST" then
@@ -265,7 +304,9 @@ end
 
 function RBreak(txt)
     if bot.status ~= 1 then
-        powershell("Bot Disconnected, Try to connect in 15sec")
+        if USE_WEBHOOK then
+        powershell("Bot Disconnected, Try to connect in 15sec",WEBHOOK_INFORMATION)
+        end
         if bot.status == BotStatus.account_banned then
             if SWAP_ACC_IF_BAN then
                 if CID_OR_GUEST == "GUEST" then
@@ -306,7 +347,9 @@ end
 
 function RBlock(txt)
     if bot.status ~= 1 then
-        powershell("Bot Disconnected, Try to connect in 15sec")
+        if USE_WEBHOOK then
+        powershell("Bot Disconnected, Try to connect in 15sec",WEBHOOK_INFORMATION)
+        end
         if bot.status == BotStatus.account_banned then
             if SWAP_ACC_IF_BAN then
                 if CID_OR_GUEST == "GUEST" then
@@ -347,7 +390,9 @@ end
 
 function RSeed(txt)
     if bot.status ~= 1 then
-        powershell("Bot Disconnected, Try to connect in 15sec")
+        if USE_WEBHOOK then
+        powershell("Bot Disconnected, Try to connect in 15sec",WEBHOOK_INFORMATION)
+        end
         if bot.status == BotStatus.account_banned then
             if SWAP_ACC_IF_BAN then
                 if CID_OR_GUEST == "GUEST" then
@@ -388,7 +433,9 @@ end
 
 function RPack(txt)
     if bot.status ~= 1 then
-        powershell("Bot Disconnected, Try to connect in 15sec")
+        if USE_WEBHOOK then
+        powershell("Bot Disconnected, Try to connect in 15sec",WEBHOOK_INFORMATION)
+        end
         if bot.status == BotStatus.account_banned then
             if SWAP_ACC_IF_BAN then
                 if CID_OR_GUEST == "GUEST" then
@@ -429,7 +476,25 @@ end
 
 function cekKoneksi()
     if bot.status ~= 1 then
-        powershell("Bot Disconnected, Try to connect in 15sec")
+        if USE_WEBHOOK then
+        powershell("Bot Disconnected, Try to connect in 15sec",WEBHOOK_INFORMATION)
+        end
+        if bot.level == MAX_LEVEL then
+            if SWAP_ACC_IF_LEVEL then
+                if CID_OR_GUEST == "GUEST" then
+                    local randomStr = ""
+                    for _ = 1, 10 do
+                        randomStr = randomStr .. randomChar()
+                    end
+                    bot:updateBot(randomStr:upper(),result.mac,result.rid)
+                    sleep(20*1000)
+                end
+                if CID_OR_GUEST == "CID" then
+                    bot:updateBot(result.mac,result.rid)
+                    sleep(20*1000)
+                end
+            end
+        end
         if bot.status == BotStatus.account_banned then
             if SWAP_ACC_IF_BAN then
                 if CID_OR_GUEST == "GUEST" then
@@ -500,7 +565,9 @@ function takeBlock(listWorld)
                 bot:collect(2)
                 sleep(500)
                 CURRENT_BLOCK = gscan(BLOCKID)
-                powershell("Take "..math.floor(AWALB-CURRENT_BLOCK).." Block, Remaining "..CURRENT_BLOCK.." Block")
+                if USE_WEBHOOK then
+                powershell("Take "..math.floor(AWALB-CURRENT_BLOCK).." "..getInfo(BLOCKID).name..", Remaining "..CURRENT_BLOCK.." Block",WEBHOOK_BLOCK)
+                end
                 if inv:findItem(BLOCKID) >= 1 then
                     break
                 end
@@ -520,7 +587,9 @@ end
 
 function PNB()
     RBreak(WORLDBREAK)
-    powershell("BREAKING BLOCK")
+    if USE_WEBHOOK then
+    powershell("BREAKING BLOCK",WEBHOOK_INFORMATION)
+    end
     if bot:isInWorld(WORLDBREAK) then
         goesTo(WORLDBREAK,IDWORLDBREAK)
         sleep(1000)
@@ -616,11 +685,10 @@ function PNB()
                 --take ut--
             end
         else
-            if SAYING then
-            bot:say("TRASHING")
-            else
+            while inv.slotcount <= 26 do
+                bot:buy("upgrade_backpack")
+                sleep(DELAYBUYPACK)
             end
-            sleep(300)
             trasher()
             sleep(100)
         end
@@ -660,7 +728,9 @@ function dropSeed()
             sleep(500)
         end
         CURRENT_SEED = gscan(SEEDID)
-        powershell("Droped "..math.floor(CURRENT_SEED-AWALS).." Seed, Total "..CURRENT_SEED)
+        if USE_WEBHOOK then
+        powershell("Droped "..math.floor(CURRENT_SEED-AWALS).." "..getInfo(SEEDID).name..", Total "..CURRENT_SEED,WEBHOOK_SEED)
+        end
     else
         dropSeed()
     end
@@ -693,7 +763,9 @@ function dropPack()
             end
         bot:moveTo(1,0)
         sleep(500)
-        powershell("Droped Pack "..gscan(IDPACK[i]))
+        if USE_WEBHOOK then
+        powershell("Droped "..gscan(IDPACK[i]).." "..getInfo(IDPACK[i]).name,WEBHOOK_PACK)
+        end
         end
     else
         dropPack()
@@ -726,6 +798,10 @@ trashList = {1406,9346,5040,5042,5044,5032,5034,5036,5038,5024,5026,5028,7162,71
 function trasher()
     for i, trash in ipairs(trashList) do
         if inv:getItemCount(trash) >= 100 then
+            if SAYING then
+                bot:say("TRASHING")
+            else
+            end
           bot:fastTrash(trash)
           sleep(2000)
           bot:fastTrash(trash,inv:findItem(trash))
@@ -775,7 +851,9 @@ function main()
             end
         end
         if AWALB == 0 then
-            powershell("NO BLOCK LEFT, BOT DONE")
+            if USE_WEBHOOK then
+            powershell("NO BLOCK LEFT, BOT DONE",WEBHOOK_INFORMATION)
+            end
             sleep(300)
         
             if inv:findItem(SEEDID) >= 1 then
@@ -848,7 +926,9 @@ end
 if nemuHwid then
     print("HWID Matched, Running Script")
     sleep(100)
-    powershell("HWID Matched, Running Script")
+    if USE_WEBHOOK then
+    powershell("HWID Matched, Running Script",WEBHOOK_INFORMATION)
+    end
     if TAKE_PICKAXE then
         if inv:getItemCount(98) < 1 then
         sleep((INDEX_SLOT - 1) * 3000)
@@ -870,5 +950,7 @@ else
     sleep(100)
     getHWID(HWID())
     sleep(100)
-    powershell("ID GAK SESUAI/KONTAK ADMIN NOWADAYS-SCHOOL/ALFIRST-STORE (linktr.ee/alfirst_store)")
+    if USE_WEBHOOK then
+    powershell("ID GAK SESUAI/KONTAK ADMIN NOWADAYS-SCHOOL/ALFIRST-STORE (linktr.ee/alfirst_store)",WEBHOOK_INFORMATION)
+    end
 end
