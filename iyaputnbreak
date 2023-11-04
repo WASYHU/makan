@@ -475,25 +475,38 @@ function RPack(txt)
 end
 
 function cekKoneksi()
+    if bot.level == MAX_LEVEL then
+        if SWAP_ACC_IF_LEVEL then
+            if inv:findItem(SEEDID) >= 1 then
+                dropSeed()
+                sleep(DELAYWARP)
+            end
+            if inv:findItem(BLOCKID) >= 1 then
+                dropBlock()
+                sleep(DELAYWARP)
+            end
+            if SAYING then
+                bot:say("SWAP ACC")
+            else
+            end
+            powershell("Bot Swap Acc",WEBHOOK_INFORMATION)
+            if CID_OR_GUEST == "GUEST" then
+                local randomStr = ""
+                for _ = 1, 10 do
+                    randomStr = randomStr .. randomChar()
+                end
+                bot:updateBot(randomStr:upper(),result.mac,result.rid)
+                sleep(20*1000)
+            end
+            if CID_OR_GUEST == "CID" then
+                bot:updateBot(result.mac,result.rid)
+                sleep(20*1000)
+            end
+        end
+    end
     if bot.status ~= 1 then
         if USE_WEBHOOK then
         powershell("Bot Disconnected, Try to connect in 15sec",WEBHOOK_INFORMATION)
-        end
-        if bot.level == MAX_LEVEL then
-            if SWAP_ACC_IF_LEVEL then
-                if CID_OR_GUEST == "GUEST" then
-                    local randomStr = ""
-                    for _ = 1, 10 do
-                        randomStr = randomStr .. randomChar()
-                    end
-                    bot:updateBot(randomStr:upper(),result.mac,result.rid)
-                    sleep(20*1000)
-                end
-                if CID_OR_GUEST == "CID" then
-                    bot:updateBot(result.mac,result.rid)
-                    sleep(20*1000)
-                end
-            end
         end
         if bot.status == BotStatus.account_banned then
             if SWAP_ACC_IF_BAN then
@@ -705,6 +718,34 @@ function PNB()
         end
     else
         PNB()
+    end
+end
+
+function dropBlock()
+    RBlock(WORLDBLOCK[1])
+    bot.auto_collect = false
+    if bot:isInWorld(WORLDBLOCK[1]) then
+        goesTo(WORLDBLOCK[1],IDWORLDBLOCK)
+        AWALS = gscan(BLOCKID)
+        sleep(200)
+        bot:moveTo(1,0)
+        lahA = math.floor(getLocal().posx/32)+math.floor(gscan(BLOCKID)/3500)
+        lahY = math.floor(getLocal().posy/32)
+        sleep(500)
+        bot:fastDrop(BLOCKID,inv:getItemCount(BLOCKID))
+        sleep(500)
+        while inv:getItemCount(BLOCKID) > 0 do
+            bot:moveTo(1,0)
+            sleep(200)
+            bot:fastDrop(BLOCKID,inv:getItemCount(BLOCKID))
+            sleep(500)
+        end
+        CURRENT_SEED = gscan(BLOCKID)
+        if USE_WEBHOOK then
+        powershell("Droped "..math.floor(CURRENT_SEED-AWALS).." "..getInfo(BLOCKID).name..", Total "..CURRENT_SEED,WEBHOOK_BLOCK)
+        end
+    else
+        dropBlock()
     end
 end
 
