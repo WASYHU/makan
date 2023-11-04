@@ -698,9 +698,11 @@ function PNB()
                 --take ut--
             end
         else
-            while inv.slotcount <= 26 do
-                bot:buy("upgrade_backpack")
-                sleep(DELAYBUYPACK)
+            if bot.gem_count >= 500 then
+                while inv.slotcount <= 26 do
+                    bot:buy("upgrade_backpack")
+                    sleep(DELAYBUYPACK)
+                end
             end
             trasher()
             sleep(100)
