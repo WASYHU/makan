@@ -278,6 +278,8 @@ function RPick(txt)
                     bot:updateBot(result.mac,result.rid)
                     sleep(20*1000)
                 end
+            else
+                removeBot()
             end
         end
         while bot.status ~= 1 do
@@ -321,6 +323,8 @@ function RBreak(txt)
                     bot:updateBot(result.mac,result.rid)
                     sleep(20*1000)
                 end
+            else
+                removeBot()
             end
         end
         while bot.status ~= 1 do
@@ -364,6 +368,8 @@ function RBlock(txt)
                     bot:updateBot(result.mac,result.rid)
                     sleep(20*1000)
                 end
+            else
+                removeBot()
             end
         end
         while bot.status ~= 1 do
@@ -407,6 +413,8 @@ function RSeed(txt)
                     bot:updateBot(result.mac,result.rid)
                     sleep(20*1000)
                 end
+            else
+                removeBot()
             end
         end
         while bot.status ~= 1 do
@@ -450,6 +458,8 @@ function RPack(txt)
                     bot:updateBot(result.mac,result.rid)
                     sleep(20*1000)
                 end
+            else
+                removeBot()
             end
         end
         while bot.status ~= 1 do
@@ -524,6 +534,8 @@ function cekKoneksi()
                     bot:updateBot(result.mac,result.rid)
                     sleep(20*1000)
                 end
+            else
+                removeBot()
             end
         end
         while bot.status ~= 1 do
