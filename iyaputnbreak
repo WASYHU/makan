@@ -279,10 +279,11 @@ function RPick(txt)
                     sleep(20*1000)
                 end
             else
-                removeBot()
+                bot.auto_reconnect = false
+                bot:stopScript()
             end
         end
-        while bot.status ~= 1 do
+        while bot.status ~= 1 or bot.status ~= BotStatus.account_banned do
             bot:connect()
             bot.auto_reconnect = true
             bot.reconnect_interval = 15
@@ -324,10 +325,11 @@ function RBreak(txt)
                     sleep(20*1000)
                 end
             else
-                removeBot()
+                bot.auto_reconnect = false
+                bot:stopScript()
             end
         end
-        while bot.status ~= 1 do
+        while bot.status ~= 1 or bot.status ~= BotStatus.account_banned do
             bot:connect()
             bot.auto_reconnect = true
             bot.reconnect_interval = 15
@@ -369,10 +371,11 @@ function RBlock(txt)
                     sleep(20*1000)
                 end
             else
-                removeBot()
+                bot.auto_reconnect = false
+                bot:stopScript()
             end
         end
-        while bot.status ~= 1 do
+        while bot.status ~= 1 or bot.status ~= BotStatus.account_banned do
             bot:connect()
             bot.auto_reconnect = true
             bot.reconnect_interval = 15
@@ -414,10 +417,11 @@ function RSeed(txt)
                     sleep(20*1000)
                 end
             else
-                removeBot()
+                bot.auto_reconnect = false
+                bot:stopScript()
             end
         end
-        while bot.status ~= 1 do
+        while bot.status ~= 1 or bot.status ~= BotStatus.account_banned do
             bot:connect()
             bot.auto_reconnect = true
             bot.reconnect_interval = 15
@@ -459,10 +463,11 @@ function RPack(txt)
                     sleep(20*1000)
                 end
             else
-                removeBot()
+                bot.auto_reconnect = false
+                bot:stopScript()
             end
         end
-        while bot.status ~= 1 do
+        while bot.status ~= 1 or bot.status ~= BotStatus.account_banned do
             bot:connect()
             bot.auto_reconnect = true
             bot.reconnect_interval = 15
@@ -535,10 +540,11 @@ function cekKoneksi()
                     sleep(20*1000)
                 end
             else
-                removeBot()
+                bot.auto_reconnect = false
+                bot:stopScript()
             end
         end
-        while bot.status ~= 1 do
+        while bot.status ~= 1 or bot.status ~= BotStatus.account_banned do
             bot:connect()
             bot.auto_reconnect = true
             bot.reconnect_interval = 15
