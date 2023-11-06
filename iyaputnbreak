@@ -490,7 +490,7 @@ function RPack(txt)
 end
 
 function cekKoneksi()
-    if bot.level == MAX_LEVEL then
+    while bot.level == MAX_LEVEL do
         if SWAP_ACC_IF_LEVEL then
             if inv:findItem(SEEDID) >= 1 then
                 dropSeed()
