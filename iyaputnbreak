@@ -255,6 +255,7 @@ function goesTo(a,b)
     if currentWorld ~= "" and currentWorld ~= "EXIT" then
         if world:getTile(Botx,Boty).fg == 6 then
             goesTo(a,b)
+            sleep(DELAYWARP)
         end
     end
 end
