@@ -879,40 +879,44 @@ function main()
         listWorld = listWorld:upper()
         RBlock(listWorld)
         sleep(10000)
-        AWALB = gscan(BLOCKID)
-        while AWALB > 0 do
-            if inv:findItem(BLOCKID) <= 0 then
-                if SAYING then
-                    bot:say("OTW TAKE BLOCK")
+        if bot:isInWorld(listWorld) then
+            AWALB = gscan(BLOCKID)
+            while AWALB > 0 do
+                if inv:findItem(BLOCKID) <= 0 then
+                    if SAYING then
+                        bot:say("OTW TAKE BLOCK")
+                    end
+                    goesTo(listWorld,IDWORLDBLOCK)
+                    sleep(DELAYWARP)
+                    takeBlock(listWorld)
                 end
-                goesTo(listWorld,IDWORLDBLOCK)
-                sleep(DELAYWARP)
-                takeBlock(listWorld)
-            end
-            if inv:findItem(SEEDID) >= 1 then
-                if SAYING then
-                    bot:say("OTW DROP SEED")
+                if inv:findItem(SEEDID) >= 1 then
+                    if SAYING then
+                        bot:say("OTW DROP SEED")
+                    end
+                    RSeed(WORLDSEED)
+                    sleep(DELAYWARP)
+                    dropSeed()
                 end
-                RSeed(WORLDSEED)
-                sleep(DELAYWARP)
-                dropSeed()
-            end
-            if inv:findItem(BLOCKID) >= 1 then
-                if SAYING then
-                    bot:say("OTW PNB")
+                if inv:findItem(BLOCKID) >= 1 then
+                    if SAYING then
+                        bot:say("OTW PNB")
+                    end
+                    RBreak(WORLDBREAK)
+                    sleep(DELAYWARP)
+                    PNB()
                 end
-                RBreak(WORLDBREAK)
-                sleep(DELAYWARP)
-                PNB()
-            end
-            if inv:findItem(BLOCKID) <= 0 then
-                if SAYING then
-                    bot:say("OTW TAKE BLOCK")
+                if inv:findItem(BLOCKID) <= 0 then
+                    if SAYING then
+                        bot:say("OTW TAKE BLOCK")
+                    end
+                    goesTo(listWorld,IDWORLDBLOCK)
+                    sleep(DELAYWARP)
+                    takeBlock(listWorld)
                 end
-                goesTo(listWorld,IDWORLDBLOCK)
-                sleep(DELAYWARP)
-                takeBlock(listWorld)
             end
+        else
+            RBlock(listWorld)
         end
         if AWALB == 0 then
             if USE_WEBHOOK then
