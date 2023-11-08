@@ -537,7 +537,7 @@ for _, lll in ipairs(t_license) do
     end
 end
 
-if nemuHwid then
+if matchlicense then
     print("LICENSE Matched, Running Script")
     sleep(100)
     if MODE == "HARVEST" then
