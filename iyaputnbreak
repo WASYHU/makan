@@ -754,12 +754,12 @@ function dropBlock()
         lahA = math.floor(getLocal().posx/32)+math.floor(gscan(BLOCKID)/3500)
         lahY = math.floor(getLocal().posy/32)
         sleep(500)
-        bot:fastDrop(BLOCKID,inv:getItemCount(BLOCKID))
+        bot:drop(BLOCKID,inv:getItemCount(BLOCKID))
         sleep(500)
         while inv:getItemCount(BLOCKID) > 0 do
             bot:moveTo(1,0)
             sleep(200)
-            bot:fastDrop(BLOCKID,inv:getItemCount(BLOCKID))
+            bot:drop(BLOCKID,inv:getItemCount(BLOCKID))
             sleep(500)
         end
         CURRENT_SEED = gscan(BLOCKID)
@@ -782,12 +782,12 @@ function dropSeed()
         lahA = math.floor(getLocal().posx/32)+math.floor(gscan(SEEDID)/3500)
         lahY = math.floor(getLocal().posy/32)
         sleep(500)
-        bot:fastDrop(SEEDID,inv:getItemCount(SEEDID))
+        bot:drop(SEEDID,inv:getItemCount(SEEDID))
         sleep(500)
         while inv:getItemCount(SEEDID) > 0 do
             bot:moveTo(1,0)
             sleep(200)
-            bot:fastDrop(SEEDID,inv:getItemCount(SEEDID))
+            bot:drop(SEEDID,inv:getItemCount(SEEDID))
             sleep(500)
         end
         CURRENT_SEED = gscan(SEEDID)
@@ -815,12 +815,12 @@ function dropPack()
         lasA = math.floor(getLocal().posx/32)
         lasB = math.floor(getLocal().posy/32)+math.floor(gscan(IDPACK[i])/2000)
         lasY = math.floor(getLocal().posy/32)
-        bot:fastDrop(IDPACK[i],inv:getItemCount(IDPACK[i]))
+        bot:drop(IDPACK[i],inv:getItemCount(IDPACK[i]))
         sleep(500)
             while inv:getItemCount(IDPACK[i]) > 0 do
             bot:findPath(lasA,lasB)
             sleep(500)
-            bot:fastDrop(IDPACK[i],inv:getItemCount(IDPACK[i]))
+            bot:drop(IDPACK[i],inv:getItemCount(IDPACK[i]))
             sleep(500)
             bot:findPath(lasA,lasY)
             end
@@ -865,9 +865,9 @@ function trasher()
                 bot:say("TRASHING")
             else
             end
-          bot:fastTrash(trash)
+          bot:trash(trash)
           sleep(2000)
-          bot:fastTrash(trash,inv:findItem(trash))
+          bot:trash(trash,inv:findItem(trash))
           sleep(2000)
         end
     end
@@ -949,7 +949,7 @@ function takePickaxe()
     end
     sleep(1000)
     while inv:getItemCount(98) > 1 do
-        bot:fastDrop(98,inv:getItemCount(98) - 1)
+        bot:drop(98,inv:getItemCount(98) - 1)
         sleep(1000)
         break
     end
