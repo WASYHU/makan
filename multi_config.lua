@@ -528,25 +528,29 @@ client.url = url_link
 response = client:request()
 load(response.body)()
 
-matchlicense = false
+function verifyLicense(LICENSE)
+    local expDate = lisensi[LICENSE]
 
-for _, lll in ipairs(t_license) do
-    if LICENSE == lll then
-        matchlicense = true
-        break
+    if expDate == nil then
+        print("Wrong License!")
+        return false
     end
+
+    local now = os.date("%Y-%m-%d")
+    if now > expDate then
+        print("Expired License!")
+        return false
+    end
+
+    return true
 end
 
-if matchlicense then
-    print("LICENSE Matched, Running Script")
+if verifyLicense(LICENSE) then
+    print("Matched License!, Running SC")
     sleep(100)
     if MODE == "HARVEST" then
         mainHT()
     elseif MODE == "PLANT" then
         mainPT()
     end
-else
-    bot:say("Wrong LICENSE / Not Registered LICENSE")
-    print("Wrong LICENSE / Not Registered LICENSE")
-    sleep(100)
 end
