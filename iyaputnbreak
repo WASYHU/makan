@@ -249,7 +249,7 @@ end
 function goesTo(a,b) 
     sleep(500)
     bot:warp(a,b)
-    sleep(500)
+    sleep(4000)
     cekPos()
     currentWorld = tostring(world.name)
     if currentWorld ~= "" and currentWorld ~= "EXIT" then
