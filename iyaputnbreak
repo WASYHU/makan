@@ -182,7 +182,7 @@ function webhooks(link, edits)
             description = statusBotDescription(status) 
         })
     end
-
+    writeDataToFile(data)
     -- Add header
     header = "SCRIPT PNB V2.5 BY NOWADAYS"
     table.insert(descriptions, "`" .. header .. "`")
@@ -832,8 +832,6 @@ end
 if nemuHwid then
     print("HWID Matched, Running Script")
     if USE_WEBHOOK then
-        writeDataToFile(data)
-        sleep(100)
         webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
     end
     sleep((INDEX_SLOT - 1) * 500)
