@@ -463,6 +463,7 @@ function takeBlock(listWorld)
             bot:findPath(xal, yal)
             bot:collect(2)
             sleep(500)
+            if inv:findItem(BLOCKID) >= 1 then
             CURRENT_BLOCK = gscan(BLOCKID)
             if USE_WEBHOOK then
                 if CURRENT_BLOCK <= data.CURRENT_BLOCK then
@@ -471,7 +472,6 @@ function takeBlock(listWorld)
                 end
                 webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
             end
-            if inv:findItem(BLOCKID) >= 1 then
                 break
             end
         end
