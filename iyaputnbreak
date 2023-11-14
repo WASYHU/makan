@@ -33,21 +33,17 @@ DELAYBREAK = CONFIG.DELAY_SET.DELAY_BREAK
 DELAYPLACE = CONFIG.DELAY_SET.DELAY_PLACE
 --------WEBHOOK_SET--------
 USE_WEBHOOK = CONFIG.WEBHOOK_SET.USE_WEBHOOK
-WEBHOOK_SEED = CONFIG.WEBHOOK_SET.WEBHOOK_SEED
-WEBHOOK_PACK = CONFIG.WEBHOOK_SET.WEBHOOK_PACK
-WEBHOOK_BLOCK = CONFIG.WEBHOOK_SET.WEBHOOK_BLOCK
+WEBHOOK_EDITED = CONFIG.WEBHOOK_SET.WEBHOOK_EDITED
 WEBHOOK_INFORMATION = CONFIG.WEBHOOK_SET.WEBHOOK_INFORMATION
+WEBHOOK_INFORMATION[1] = CONFIG.WEBHOOK_SET.WEBHOOK_INFORMATION[1]
+WEBHOOK_INFORMATION[2] = CONFIG.WEBHOOK_SET.WEBHOOK_INFORMATION[2]
+
 DISCORDID = CONFIG.WEBHOOK_SET.DISCORD_ID
 --------OPTIONAL_SET--------
 AFTER_DONE_REMOVEBOT = CONFIG.OPTIONAL_SET.AFTER_DONE_REMOVEBOT
 TAKE_PICKAXE = CONFIG.OPTIONAL_SET.TAKE_PICKAXE
 WORLDPICKAXE = CONFIG.OPTIONAL_SET.WORLD_PICKAXE:upper()
 IDWORLDPICKAXE = CONFIG.OPTIONAL_SET.ID_WORLD_PICKAXE:upper()
-SWAP_ACC_IF_LEVEL = CONFIG.OPTIONAL_SET.SWAP_ACC_IF_LEVEL
-MAX_LEVEL = CONFIG.OPTIONAL_SET.MAX_LEVEL
-SWAP_ACC_IF_BAN = CONFIG.SWAP_ACC_IF_BAN
-CID_OR_GUEST = CONFIG.OPTIONAL_SET.CID_OR_GUEST:upper()
-BOT_LIST = CONFIG.OPTIONAL_SET.BOT_LIST
 -----------------------------
 t = os.time()
 bot.auto_trash = false
@@ -56,6 +52,11 @@ bot.move_range = 6
 bot.object_collect_delay = 0
 bot.collect_interval = 100
 bot.collect_range = 3
+botData = {}
+totalGems = 0
+CURRENT_BLOCK = 0
+CURRENT_SEED = 0
+Mole = 0
 LIST_BOT = {}
 INDEX_SLOT = 0
 --------dont touch--------
@@ -71,95 +72,57 @@ for idx, botlist in pairs(LIST_BOT) do
     end
 end
 
-function getMacAndRid(botList, index)
-    local result = {}
-    for i, bot in ipairs(botList) do
-        local mac, rid = string.match(bot, "([^|]+)|([^|]+)")
-        table.insert(result, {mac = mac, rid = rid})
-    end
-    return result[index]
-end
-
-local result = getMacAndRid(BOT_LIST, INDEX_SLOT)
-
 function randomChar()
     local charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     return string.char(charset:byte(math.random(1, #charset)))
 end
 
-function punch(x,y)
+function sendGameUpdate(types, intData, x, y)
     cekKoneksi()
     local packet = GameUpdatePacket.new()
-    packet.type = 3
-    packet.int_data = 18
+    packet.type = types
+    packet.int_data = intData
     packet.pos_x = getLocal().posx
     packet.pos_y = getLocal().posy
-    packet.int_x = math.floor(getLocal().posx/32+x)
-    packet.int_y = math.floor(getLocal().posy/32+y)
+    packet.int_x = math.floor(getLocal().posx / 32 + x)
+    packet.int_y = math.floor(getLocal().posy / 32 + y)
     bot:sendRaw(packet)
 end
 
-function pasang(x,y,id)
-    cekKoneksi()
-    local packet = GameUpdatePacket.new()
-    packet.type = 3
-    packet.int_data = id
-    packet.pos_x = getLocal().posx
-    packet.pos_y = getLocal().posy
-    packet.int_x = math.floor(getLocal().posx/32+x)
-    packet.int_y = math.floor(getLocal().posy/32+y)
-    bot:sendRaw(packet)
+function punch(x, y)
+    sendGameUpdate(3, 18, x, y)
 end
+
+function pasang(x, y, id)
+    sendGameUpdate(3, id, x, y)
+end
+
 ---- Bot Status (Online/Offline) & Reconnect ----
-function statusBotDescription()
-	if bot.status == BotStatus.online then
-		return "Online"
-	elseif bot.status == BotStatus.offline then
-		return "Offline"
-	elseif bot.status == BotStatus.wrong_password then
+function statusBotDescription(status)
+	if status == BotStatus.online then
+		return "<:online_badge:1172761015390306304>"
+	elseif status == BotStatus.offline then
+		return "<:Offline:1172763331493367880>"
+	elseif status == BotStatus.wrong_password then
 		return "Wrong Password"
-	elseif bot.status == BotStatus.account_banned then
+	elseif status == BotStatus.account_banned then
 		return "Account Banned"
-	elseif bot.status == BotStatus.location_banned then
+	elseif status == BotStatus.location_banned then
 		return "Location Banned"
-	elseif bot.status == BotStatus.version_update then
+	elseif status == BotStatus.version_update then
 		return "Version Update"
-	elseif bot.status == BotStatus.advanced_account_protection then
+	elseif status == BotStatus.advanced_account_protection then
 		return "Advanced Account Protection"
-	elseif bot.status == BotStatus.server_overload then
+	elseif status == BotStatus.server_overload then
 		return "Server Overload"
-	elseif bot.status == BotStatus.too_many_login then
+	elseif status == BotStatus.too_many_login then
 		return "Too Many Login"
-	elseif bot.status == BotStatus.maintenance then
+	elseif status == BotStatus.maintenance then
 		return "Maintenance"
-	elseif bot.status == BotStatus.http_block then
+	elseif status == BotStatus.http_block then
 		return "Http Block"
-	elseif bot.status == BotStatus.captcha_requested then
+	elseif status == BotStatus.captcha_requested then
 		return "Captcha Requested"
-	else 
-		return "-"
-	end
-end
-
-function statusBotCaptcha()
-	if bot.captcha_status == CaptchaStatus.no_captcha then
-		return "No Captcha"
-	elseif bot.captcha_status == CaptchaStatus.not_found then
-		return "Captcha Not Found"
-	elseif bot.captcha_status == CaptchaStatus.solved then
-		return "Captcha Solved"
-	elseif bot.captcha_status == CaptchaStatus.solving then
-		return "Try To Solving Captcha"
-	elseif bot.captcha_status == CaptchaStatus.wrong then
-		return "Wrong Captcha"
-	elseif bot.captcha_status == CaptchaStatus.failed then
-		return "Failed Captcha"
-	elseif bot.captcha_status == CaptchaStatus.no_access then
-		return "No Access"
-	elseif bot.captcha_status == CaptchaStatus.invalid_key then
-		return "Invalid Key/API"
-	elseif bot.captcha_status == CaptchaStatus.invalid_token then
-		return "Invalid Token"
 	else 
 		return "-"
 	end
@@ -169,30 +132,112 @@ function webhookDate()
 	local Time_Difference_Webhook = 7 * 3600
 	local Current_Time_GMT = os.time(os.date("!*t"))
 	local Current_Time_Webhook = Current_Time_GMT + Time_Difference_Webhook
-	return os.date("***%A, %B %d, %Y*** | ***%H:%M***", Current_Time_Webhook)
+	return os.date("%A, %B %d, %Y | %H:%M", Current_Time_Webhook)
 end
 
-function powershell(message,link)
-	te = os.time() - t
-	local wh = Webhook.new(link)
-	wh.username = "[ALFIRST-STORE]"
-	wh.avatar_url = "https://mystickermania.com/cdn/stickers/anime/jujutsu-kaisen-satoru-gojo-512x512.png"
-	wh.embed1.use = true
-	wh.embed1.title = "PNB LOGS!"
-	wh.embed1.description = "<:growbot:992058196439072770> **|** Bot         : ||"..bot.name.."||"..
-    "\n:earth_asia: **|** World       : ||"..world.name.."||"..
-    "\n<:status:1007595490600288326> **|** Status      : "..statusBotDescription()..""..
-	"\n<:status:1007595490600288326> **|** Chaptcha    : "..statusBotCaptcha()..""..
-    "\n<a:warn:1003200385315516516> **|** Level       : "..bot.level..""..
-    "\n<:pgems:996716107845075015> **|** Total Gems  : "..bot.gem_count..
-	"\n<:growtopia_clock:1011929976628596746> **|** UP Time : "..math.floor(te/86400).." Days "..math.floor(te%86400/3600).." Hours "..math.floor(te%86400%3600/60).." Minutes"..
-	"\n***========================***"..
-    "\n<:mp:996717372574539846> **|** Information : \n ***"..message.."***"..
-	"\n**Notification for - <@"..DISCORDID..">**"..
-	"\n\n"..webhookDate()
-	wh.embed1.color = math.random(1000000,9999999)
-	wh.embed1.thumbnail = "https://cdn.growtopia.tech/items/"..BLOCKID..".png"
-	wh:send()
+function readDataFromFile()
+    local data = {}
+    local fileName = "bot_data.txt"
+    local file = io.open(fileName, "r")
+    if file then
+        local content = file:read("*a")
+        file:close()
+        for line in content:gmatch("[^\r\n]+") do
+            local key, value = line:match("(%S+)%s*=%s*(%S+)")
+            if key and value then
+                data[key] = tonumber(value) or value
+            end
+        end
+    end
+    return data
+end
+
+function writeDataToFile(data)
+    local fileName = "bot_data.txt"
+    local file = io.open(fileName, "w")
+    if file then
+        for key, value in pairs(data) do
+            file:write(key .. "=" .. tostring(value) .. "\n")
+        end
+        file:close()
+    end
+end
+
+data = readDataFromFile()
+
+function webhooks(link, edits)
+    te = os.time() - t
+    descriptions = {}
+
+    botData = {}
+    totalGems = 0
+
+    for i, bot in pairs(getBots()) do
+        botInfo = getBot(bot.name)
+        status = botInfo.status
+        totalGems = totalGems + botInfo.gem_count
+        table.insert(botData, { 
+            name = botInfo.name,
+            status = status, 
+            description = statusBotDescription(status) 
+        })
+    end
+
+    -- Add header
+    header = "SCRIPT PNB V2.5 BY NOWADAYS"
+    table.insert(descriptions, "`" .. header .. "`")
+
+    for _, botInfo in ipairs(botData) do
+        -- Format the output as `[NAMABOT] [LEVEL] [STATUS]`
+        table.insert(descriptions, string.format("<:growbot:992058196439072770> `[ %s ] [`%s`]`", botInfo.name, botInfo.description))
+    end
+    table.insert(descriptions, string.format("<:pgems:996716107845075015> `Total Gems: %s`\n", totalGems))
+    -- Add total blocks
+    totalBlock = "TOTAL BLOCK"
+    table.insert(descriptions, "`" .. totalBlock .. "`")
+    table.insert(descriptions, "`"..CURRENT_BLOCK.."`")
+
+    table.insert(descriptions, "")
+
+    totalSeed = "TOTAL SEED"
+    table.insert(descriptions, "`" .. totalSeed .. "`")
+    table.insert(descriptions, "`"..CURRENT_SEED.."`")
+
+    table.insert(descriptions, "")
+
+    -- Add ID_PACK information with names
+    totalPack = "TOTAL PACK"
+    table.insert(descriptions, "`" .. totalPack .. "`")
+    for _, PACK in ipairs(IDPACK) do
+        packName = getInfo(PACK).name
+        table.insert(descriptions, "`" .. string.format("%s : %s", packName, Mole) .. "`")
+    end
+
+    table.insert(descriptions, "")
+    table.insert(descriptions, "")
+    table.insert(descriptions, "UPTIME SC : "..math.floor(te/86400).." Days "..math.floor(te%86400/3600).." Hours "..math.floor(te%86400%3600/60).." Minutes")
+    -- Add webhook date
+    table.insert(descriptions, "**[ALFIRST X NOWADAYS](https://linktr.ee/ALFIRST_STORE/) - <@"..DISCORDID..">**")
+
+    wh = Webhook.new(link)
+    wh.username = "[ALFIRST-STORE]"
+    wh.avatar_url = "https://mystickermania.com/cdn/stickers/anime/jujutsu-kaisen-satoru-gojo-512x512.png"
+    wh.embed1.use = true
+    wh.embed1.title = "PNB LOGS!"
+    wh.embed1.description = table.concat(descriptions, "\n") -- Concatenate bot names with newline
+    wh.embed1.color = math.random(1000000, 9999999)
+    wh.embed1.footer.text = webhookDate()
+    wh.embed1.footer.icon_url = "https://cdn.growtopia.tech/items/"..BLOCKID..".png"
+    wh.embed1.thumbnail = "https://cdn.growtopia.tech/items/"..BLOCKID..".png"
+    if WEBHOOK_EDITED then
+        wh:edit(edits)
+    else
+        wh:send()
+    end
+
+    CURRENT_BLOCK = data.CURRENT_BLOCK
+    CURRENT_SEED = data.CURRENT_SEED
+    Mole = data.Mole
 end
 
 function gscan(id)
@@ -240,374 +285,199 @@ function cekPos()
     if currentWorld ~= "" and currentWorld ~= "EXIT" then
         localbot = world:getLocal()
         if localbot then
-            Botx = math.floor(localbot.posx / 32) 
-            Boty = math.floor(localbot.posy / 32)
+            Botx, Boty = math.floor(localbot.posx / 32), math.floor(localbot.posy / 32)
         end
     end
 end
 
-function goesTo(a,b) 
-    sleep(500)
-    bot:warp(a,b)
-    sleep(4000)
+function goesTo(a, b)
+    bot:warp(a, b)
+    sleep(2000)
     cekPos()
     currentWorld = tostring(world.name)
     if currentWorld ~= "" and currentWorld ~= "EXIT" then
-        if world:getTile(Botx,Boty).fg == 6 then
-            goesTo(a,b)
+        while world:getTile(Botx, Boty).fg == 6 do
+            goesTo(a, b)
+            sleep(1000)
         end
     end
+end
+
+function handleAccountBanned()
+    if USE_WEBHOOK then
+        webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
+    end
+    bot.auto_reconnect = false
+    bot:stopScript()
+end
+
+function handleConnection()
+    if USE_WEBHOOK then
+        webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
+    end
+    bot:connect()
+    bot.auto_reconnect = true
+    bot.reconnect_interval = 15
+    sleep(15000)
 end
 
 function RPick(txt)
-    if bot.status ~= 1 then
-        if USE_WEBHOOK then
-        powershell("Bot Disconnected, Try to connect in 15sec",WEBHOOK_INFORMATION)
-        end
-        if bot.status == BotStatus.account_banned then
-            if SWAP_ACC_IF_BAN then
-                if CID_OR_GUEST == "GUEST" then
-                    local randomStr = ""
-                    for _ = 1, 10 do
-                        randomStr = randomStr .. randomChar()
-                    end
-                    bot:updateBot(randomStr:upper(),result.mac,result.rid)
-                    sleep(20*1000)
-                end
-                if CID_OR_GUEST == "CID" then
-                    bot:updateBot(result.mac,result.rid)
-                    sleep(20*1000)
-                end
-            else
-                bot.auto_reconnect = false
-                bot:stopScript()
-            end
-        end
-        while bot.status ~= 1 and bot.status ~= BotStatus.account_banned do
-            bot:connect()
-            bot.auto_reconnect = true
-            bot.reconnect_interval = 15
-            sleep(15000)
-        end
+    if bot.status == BotStatus.account_banned then
+        handleAccountBanned()
     end
-    if bot.status == BotStatus.online then
-        bot.auto_reconnect = false
+    while not (bot.status == BotStatus.online or bot.status == BotStatus.account_banned or bot.status == BotStatus.changing_subserver) do
+        handleConnection()
     end
+    bot.auto_reconnect = false
     if world.name ~= txt then
-        goesTo(txt,IDWORLDPICKAXE)
+        goesTo(txt, IDWORLDPICKAXE)
     end
     cekPos()
-    currentWorld = tostring(world.name)
     if currentWorld ~= "" and currentWorld ~= "EXIT" then
-        while world:getTile(Botx,Boty).fg == 6 do
-            goesTo(txt,IDWORLDPICKAXE)
+        while world:getTile(Botx, Boty).fg == 6 do
+            goesTo(txt, IDWORLDPICKAXE)
         end
     end
 end
 
 function RBreak(txt)
-    if bot.status ~= 1 then
-        if USE_WEBHOOK then
-        powershell("Bot Disconnected, Try to connect in 15sec",WEBHOOK_INFORMATION)
-        end
-        if bot.status == BotStatus.account_banned then
-            if SWAP_ACC_IF_BAN then
-                if CID_OR_GUEST == "GUEST" then
-                    local randomStr = ""
-                    for _ = 1, 10 do
-                        randomStr = randomStr .. randomChar()
-                    end
-                    bot:updateBot(randomStr:upper(),result.mac,result.rid)
-                    sleep(20*1000)
-                end
-                if CID_OR_GUEST == "CID" then
-                    bot:updateBot(result.mac,result.rid)
-                    sleep(20*1000)
-                end
-            else
-                bot.auto_reconnect = false
-                bot:stopScript()
-            end
-        end
-        while bot.status ~= 1 and bot.status ~= BotStatus.account_banned do
-            bot:connect()
-            bot.auto_reconnect = true
-            bot.reconnect_interval = 15
-            sleep(15000)
-        end
+    if bot.status == BotStatus.account_banned then
+        handleAccountBanned()
     end
-    if bot.status == BotStatus.online then
-        bot.auto_reconnect = false
+    while not (bot.status == BotStatus.online or bot.status == BotStatus.account_banned or bot.status == BotStatus.changing_subserver) do
+        handleConnection()
     end
+    bot.auto_reconnect = false
     if world.name ~= txt then
-        goesTo(txt,IDWORLDBREAK)
+        goesTo(txt, IDWORLDBREAK)
     end
     cekPos()
-    currentWorld = tostring(world.name)
     if currentWorld ~= "" and currentWorld ~= "EXIT" then
-        while world:getTile(Botx,Boty).fg == 6 do
-            goesTo(txt,IDWORLDBREAK)
+        while world:getTile(Botx, Boty).fg == 6 do
+            goesTo(txt, IDWORLDBREAK)
         end
     end
 end
 
 function RBlock(txt)
-    if bot.status ~= 1 then
-        if USE_WEBHOOK then
-        powershell("Bot Disconnected, Try to connect in 15sec",WEBHOOK_INFORMATION)
-        end
-        if bot.status == BotStatus.account_banned then
-            if SWAP_ACC_IF_BAN then
-                if CID_OR_GUEST == "GUEST" then
-                    local randomStr = ""
-                    for _ = 1, 10 do
-                        randomStr = randomStr .. randomChar()
-                    end
-                    bot:updateBot(randomStr:upper(),result.mac,result.rid)
-                    sleep(20*1000)
-                end
-                if CID_OR_GUEST == "CID" then
-                    bot:updateBot(result.mac,result.rid)
-                    sleep(20*1000)
-                end
-            else
-                bot.auto_reconnect = false
-                bot:stopScript()
-            end
-        end
-        while bot.status ~= 1 and bot.status ~= BotStatus.account_banned do
-            bot:connect()
-            bot.auto_reconnect = true
-            bot.reconnect_interval = 15
-            sleep(15000)
-        end
+    if bot.status == BotStatus.account_banned then
+        handleAccountBanned()
     end
-    if bot.status == BotStatus.online then
-        bot.auto_reconnect = false
+    while not (bot.status == BotStatus.online or bot.status == BotStatus.account_banned or bot.status == BotStatus.changing_subserver) do
+        handleConnection()
     end
+    bot.auto_reconnect = false
     if world.name ~= txt then
-        goesTo(txt,IDWORLDBLOCK)
+        goesTo(txt, IDWORLDBLOCK)
     end
     cekPos()
-    currentWorld = tostring(world.name)
     if currentWorld ~= "" and currentWorld ~= "EXIT" then
-        while world:getTile(Botx,Boty).fg == 6 do
-            goesTo(txt,IDWORLDBLOCK)
+        while world:getTile(Botx, Boty).fg == 6 do
+            goesTo(txt, IDWORLDBLOCK)
         end
     end
 end
 
 function RSeed(txt)
-    if bot.status ~= 1 then
-        if USE_WEBHOOK then
-        powershell("Bot Disconnected, Try to connect in 15sec",WEBHOOK_INFORMATION)
-        end
-        if bot.status == BotStatus.account_banned then
-            if SWAP_ACC_IF_BAN then
-                if CID_OR_GUEST == "GUEST" then
-                    local randomStr = ""
-                    for _ = 1, 10 do
-                        randomStr = randomStr .. randomChar()
-                    end
-                    bot:updateBot(randomStr:upper(),result.mac,result.rid)
-                    sleep(20*1000)
-                end
-                if CID_OR_GUEST == "CID" then
-                    bot:updateBot(result.mac,result.rid)
-                    sleep(20*1000)
-                end
-            else
-                bot.auto_reconnect = false
-                bot:stopScript()
-            end
-        end
-        while bot.status ~= 1 and bot.status ~= BotStatus.account_banned do
-            bot:connect()
-            bot.auto_reconnect = true
-            bot.reconnect_interval = 15
-            sleep(15000)
-        end
+    if bot.status == BotStatus.account_banned then
+        handleAccountBanned()
     end
-    if bot.status == BotStatus.online then
-        bot.auto_reconnect = false
+    while not (bot.status == BotStatus.online or bot.status == BotStatus.account_banned or bot.status == BotStatus.changing_subserver) do
+        handleConnection()
     end
+    bot.auto_reconnect = false
     if world.name ~= txt then
-        goesTo(txt,IDWORLDSEED)
+        goesTo(txt, IDWORLDSEED)
     end
     cekPos()
-    currentWorld = tostring(world.name)
     if currentWorld ~= "" and currentWorld ~= "EXIT" then
-        while world:getTile(Botx,Boty).fg == 6 do
-            goesTo(txt,IDWORLDSEED)
+        while world:getTile(Botx, Boty).fg == 6 do
+            goesTo(txt, IDWORLDSEED)
         end
     end
 end
 
 function RPack(txt)
-    if bot.status ~= 1 then
-        if USE_WEBHOOK then
-        powershell("Bot Disconnected, Try to connect in 15sec",WEBHOOK_INFORMATION)
-        end
-        if bot.status == BotStatus.account_banned then
-            if SWAP_ACC_IF_BAN then
-                if CID_OR_GUEST == "GUEST" then
-                    local randomStr = ""
-                    for _ = 1, 10 do
-                        randomStr = randomStr .. randomChar()
-                    end
-                    bot:updateBot(randomStr:upper(),result.mac,result.rid)
-                    sleep(20*1000)
-                end
-                if CID_OR_GUEST == "CID" then
-                    bot:updateBot(result.mac,result.rid)
-                    sleep(20*1000)
-                end
-            else
-                bot.auto_reconnect = false
-                bot:stopScript()
-            end
-        end
-        while bot.status ~= 1 and bot.status ~= BotStatus.account_banned do
-            bot:connect()
-            bot.auto_reconnect = true
-            bot.reconnect_interval = 15
-            sleep(15000)
-        end
+    if bot.status == BotStatus.account_banned then
+        handleAccountBanned()
     end
-    if bot.status == BotStatus.online then
-        bot.auto_reconnect = false
+    while not (bot.status == BotStatus.online or bot.status == BotStatus.account_banned or bot.status == BotStatus.changing_subserver) do
+        handleConnection()
     end
+    bot.auto_reconnect = false
     if world.name ~= txt then
-        goesTo(txt,IDWORLDPACK)
+        goesTo(txt, IDWORLDPACK)
     end
     cekPos()
-    currentWorld = tostring(world.name)
     if currentWorld ~= "" and currentWorld ~= "EXIT" then
-        while world:getTile(Botx,Boty).fg == 6 do
-            goesTo(txt,IDWORLDPACK)
+        while world:getTile(Botx, Boty).fg == 6 do
+            goesTo(txt, IDWORLDPACK)
         end
     end
 end
 
 function cekKoneksi()
-    if SWAP_ACC_IF_LEVEL then
-        while bot.level == MAX_LEVEL do
-            if inv:findItem(SEEDID) >= 1 then
-                dropSeed()
-                sleep(DELAYWARP)
-            end
-            if inv:findItem(BLOCKID) >= 1 then
-                dropBlock()
-                sleep(DELAYWARP)
-            end
-            if SAYING then
-                bot:say("SWAP ACC")
-            else
-            end
-            if USE_WEBHOOK then
-            powershell("Bot Swap Acc",WEBHOOK_INFORMATION)
-            end
-            if CID_OR_GUEST == "GUEST" then
-                local randomStr = ""
-                for _ = 1, 10 do
-                    randomStr = randomStr .. randomChar()
-                end
-                bot:updateBot(randomStr:upper(),result.mac,result.rid)
-                sleep(20*1000)
-            end
-            if CID_OR_GUEST == "CID" then
-                bot:updateBot(result.mac,result.rid)
-                sleep(20*1000)
-            end
-        end
+    if bot.status == BotStatus.account_banned then
+        handleAccountBanned()
     end
-    if bot.status ~= 1 then
-        if USE_WEBHOOK then
-        powershell("Bot Disconnected, Try to connect in 15sec",WEBHOOK_INFORMATION)
-        end
-        if bot.status == BotStatus.account_banned then
-            if SWAP_ACC_IF_BAN then
-                if CID_OR_GUEST == "GUEST" then
-                    local randomStr = ""
-                    for _ = 1, 10 do
-                        randomStr = randomStr .. randomChar()
-                    end
-                    bot:updateBot(randomStr:upper(),result.mac,result.rid)
-                    sleep(20*1000)
-                end
-                if CID_OR_GUEST == "CID" then
-                    bot:updateBot(result.mac,result.rid)
-                    sleep(20*1000)
-                end
-            else
-                bot.auto_reconnect = false
-                bot:stopScript()
-            end
-        end
-        while bot.status ~= 1 and bot.status ~= BotStatus.account_banned do
-            bot:connect()
-            bot.auto_reconnect = true
-            bot.reconnect_interval = 15
-            sleep(15000)
-        end
+    while not (bot.status == BotStatus.online or bot.status == BotStatus.account_banned or bot.status == BotStatus.changing_subserver) do
+        handleConnection()
     end
-    if bot.status == BotStatus.online then
-        bot.auto_reconnect = false
-    end
+    bot.auto_reconnect = false
     cekPos()
     currentWorld = tostring(world.name)
-    if currentWorld ~= "" and currentWorld ~= "EXIT" then
-        if world:getTile(Botx,Boty).fg == 6 then
-            RBreak(WORLDBREAK)
-            sleep(DELAYWARP)
-            baris()
+    if currentWorld ~= "" and currentWorld ~= "EXIT" and world:getTile(Botx, Boty).fg == 6 then
+        RBreak(WORLDBREAK)
+        sleep(DELAYWARP)
+        baris()
+    end
+end
+
+function goToTile(tileID)
+    for _, tile in pairs(world:getTiles()) do
+        if tile.fg == tileID then
+            cekKoneksi()
+            bot:findPath(tile.x, tile.y - 1)
+            sleep(2000)
         end
     end
 end
 
 function goGaia()
-    for _, gaia in pairs(world:getTiles()) do
-        if gaia.fg == 6946 then
-            cekKoneksi()
-            bot:findPath(gaia.x, gaia.y - 1)
-            sleep(2000)
-        end
-    end
+    goToTile(6946)
 end
 
 function goUT()
-    for _, UT in pairs(world:getTiles()) do
-        if UT.fg == 6948 then
-            cekKoneksi()
-            bot:findPath(UT.x, UT.y - 1)
-            sleep(2000)
-        end
-    end
+    goToTile(6948)
 end
 
 function takeBlock(listWorld)
     RBlock(listWorld)
-    if bot:isInWorld(listWorld) then
-        goesTo(listWorld,IDWORLDBLOCK)
-        AWALB = gscan(BLOCKID)
-        for _,al in pairs(world:getObjects()) do
-            if al.id == BLOCKID then
-                xal = math.floor(al.x / 32)
-                yal = math.floor(al.y / 32)
-                bot:findPath(xal,yal)
-                bot:collect(2)
-                sleep(500)
-                CURRENT_BLOCK = gscan(BLOCKID)
-                if USE_WEBHOOK then
-                powershell("Take "..math.floor(AWALB-CURRENT_BLOCK).." "..getInfo(BLOCKID).name..", Remaining "..CURRENT_BLOCK.." Block",WEBHOOK_BLOCK)
+    while not bot:isInWorld(listWorld) do
+        takeBlock(listWorld)
+    end
+    AWALB = gscan(BLOCKID)
+    if USE_WEBHOOK then
+        webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
+    end
+    for _, al in pairs(world:getObjects()) do
+        if al.id == BLOCKID then
+            xal, yal = math.floor(al.x / 32), math.floor(al.y / 32)
+            bot:findPath(xal, yal)
+            bot:collect(2)
+            sleep(500)
+            CURRENT_BLOCK = gscan(BLOCKID)
+                if CURRENT_BLOCK <= data.CURRENT_BLOCK then
+                    data.CURRENT_BLOCK = CURRENT_BLOCK
+                    writeDataToFile(data)
                 end
-                if inv:findItem(BLOCKID) >= 1 then
-                    break
-                end
+            if USE_WEBHOOK then
+                webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
+            end
+            if inv:findItem(BLOCKID) >= 1 then
+                break
             end
         end
-    else
-        takeBlock(listWorld)
     end
 end
 
@@ -621,7 +491,7 @@ end
 function PNB()
     RBreak(WORLDBREAK)
     if USE_WEBHOOK then
-    powershell("BREAKING BLOCK",WEBHOOK_INFORMATION)
+        webhooks(WEBHOOK_INFORMATION[1],WEBHOOK_INFORMATION[2])
     end
     if bot:isInWorld(WORLDBREAK) then
         goesTo(WORLDBREAK,IDWORLDBREAK)
@@ -743,118 +613,99 @@ function PNB()
     end
 end
 
-function dropBlock()
-    RBlock(WORLDBLOCK[1])
-    bot.auto_collect = false
-    if bot:isInWorld(WORLDBLOCK[1]) then
-        goesTo(WORLDBLOCK[1],IDWORLDBLOCK)
-        AWALS = gscan(BLOCKID)
-        sleep(200)
-        bot:moveTo(1,0)
-        lahA = math.floor(getLocal().posx/32)+math.floor(gscan(BLOCKID)/3500)
-        lahY = math.floor(getLocal().posy/32)
-        sleep(500)
-        bot:drop(BLOCKID,inv:getItemCount(BLOCKID))
-        sleep(500)
-        while inv:getItemCount(BLOCKID) > 0 do
-            bot:moveTo(1,0)
-            sleep(200)
-            bot:drop(BLOCKID,inv:getItemCount(BLOCKID))
-            sleep(500)
-        end
-        CURRENT_SEED = gscan(BLOCKID)
-        if USE_WEBHOOK then
-        powershell("Droped "..math.floor(CURRENT_SEED-AWALS).." "..getInfo(BLOCKID).name..", Total "..CURRENT_SEED,WEBHOOK_BLOCK)
-        end
-    else
-        dropBlock()
-    end
-end
-
 function dropSeed()
     RSeed(WORLDSEED)
     bot.auto_collect = false
-    if bot:isInWorld(WORLDSEED) then
-        goesTo(WORLDSEED,IDWORLDSEED)
-        AWALS = gscan(SEEDID)
+    while not bot:isInWorld(WORLDSEED) do
+        dropSeed()
+    end
+    AWALS = gscan(SEEDID)
+    sleep(200)
+    bot:moveTo(1, 0)
+    sleep(500)
+    lastX = math.floor(getLocal().posx/32) + math.floor(gscan(SEEDID)/4000)
+    lastY = math.floor(getLocal().posy/32)
+    bot:drop(SEEDID, inv:getItemCount(SEEDID))
+    sleep(500)
+    while inv:getItemCount(SEEDID) > 0 do
+        bot:findPath(lastX, lastY)
         sleep(200)
-        bot:moveTo(1,0)
-        lahA = math.floor(getLocal().posx/32)+math.floor(gscan(SEEDID)/3500)
-        lahY = math.floor(getLocal().posy/32)
-        sleep(500)
-        bot:drop(SEEDID,inv:getItemCount(SEEDID))
+        bot:drop(SEEDID, inv:getItemCount(SEEDID))
         sleep(500)
         while inv:getItemCount(SEEDID) > 0 do
-            bot:moveTo(1,0)
+            bot:moveTo(1, 0)
             sleep(200)
-            bot:drop(SEEDID,inv:getItemCount(SEEDID))
+            bot:drop(SEEDID, inv:getItemCount(SEEDID))
             sleep(500)
         end
-        CURRENT_SEED = gscan(SEEDID)
-        if USE_WEBHOOK then
-        powershell("Droped "..math.floor(CURRENT_SEED-AWALS).." "..getInfo(SEEDID).name..", Total "..CURRENT_SEED,WEBHOOK_SEED)
+    end
+    CURRENT_SEED = gscan(SEEDID)
+        if CURRENT_SEED > data.CURRENT_SEED then
+            data.CURRENT_SEED = CURRENT_SEED
+            writeDataToFile(data)
         end
-    else
-        dropSeed()
+    if USE_WEBHOOK then
+        webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
     end
 end
 
 function dropPack()
     RPack(WORLDPACK)
     bot.auto_collect = false
-    if bot:isInWorld(WORLDPACK) then
-        goesTo(WORLDPACK,IDWORLDPACK)
-        sleep(200)
-            while bot.gem_count >= PRICEPACK do
-            bot:buy(NAMEPACK)
-            sleep(DELAYBUYPACK)
-            end
-        bot:moveTo(1,0)
-        sleep(500)
-        for i = 1, #IDPACK do
-        lasA = math.floor(getLocal().posx/32)
-        lasB = math.floor(getLocal().posy/32)+math.floor(gscan(IDPACK[i])/2000)
-        lasY = math.floor(getLocal().posy/32)
-        bot:drop(IDPACK[i],inv:getItemCount(IDPACK[i]))
-        sleep(500)
-            while inv:getItemCount(IDPACK[i]) > 0 do
-            bot:findPath(lasA,lasB)
-            sleep(500)
-            bot:drop(IDPACK[i],inv:getItemCount(IDPACK[i]))
-            sleep(500)
-            bot:findPath(lasA,lasY)
-            end
-        bot:moveTo(1,0)
-        sleep(500)
-        if USE_WEBHOOK then
-        powershell("Droped "..gscan(IDPACK[i]).." "..getInfo(IDPACK[i]).name,WEBHOOK_PACK)
-        end
-        end
-    else
+    while not bot:isInWorld(WORLDPACK) do
         dropPack()
+    end
+    sleep(200)
+    while bot.gem_count >= PRICEPACK do
+        bot:buy(NAMEPACK)
+        sleep(DELAYBUYPACK)
+    end
+    bot:moveTo(1, 0)
+    sleep(500)
+    if USE_WEBHOOK then
+        webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
+    end
+    for _, PACK in ipairs(IDPACK) do
+        bot:drop(PACK, inv:getItemCount(PACK))
+        sleep(500)
+        while inv:getItemCount(PACK) > 0 do
+            bot:findPath(math.floor(getLocal().posx/32), math.floor(getLocal().posy/32) - math.floor(gscan(PACK)/4000))
+            sleep(500)
+            bot:drop(PACK, inv:getItemCount(PACK))
+            sleep(500)
+        end
+        bot:findPath(math.floor(getLocal().posx/32) + 1, math.floor(getLocal().posy/32) + math.floor(gscan(PACK)/4000))
+        sleep(500)
+        Mole = gscan(PACK)
+        if Mole > data.Mole then
+            data.Mole = Mole
+            writeDataToFile(data)
+        end
+        if USE_WEBHOOK then
+            webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
+        end
     end
 end
 
-function retrieveGaia(x,y,amount)
+function retrieveItem(x, y, amount, dialogName)
     cekKoneksi()
     sleep(1000)
-    bot:wrench(x,y)
+    bot:wrench(x, y)
     sleep(1000)
-    bot:sendPacket(2, "action|dialog_return\ndialog_name|itemsucker_seed\ntilex|" ..x.. "|\ntiley|" ..y.. "|\nbuttonClicked|retrieveitem\n\nchk_enablesucking|1")
+    local packet = "action|dialog_return\ndialog_name|" .. dialogName .. "\ntilex|" .. x .. "|\ntiley|" .. y .. "|\nbuttonClicked|retrieveitem\n\nchk_enablesucking|1"
+    bot:sendPacket(2, packet)
     sleep(4000)
-    bot:sendPacket(2, "action|dialog_return\ndialog_name|itemremovedfromsucker\ntilex|" ..x.. "|\ntiley|" ..y.. "|\nitemtoremove|"..amount)
+    local removePacket = "action|dialog_return\ndialog_name|itemremovedfromsucker\ntilex|" .. x .. "|\ntiley|" .. y .. "|\nitemtoremove|" .. amount
+    bot:sendPacket(2, removePacket)
     sleep(1000)
 end
 
-function retrieveUT(x,y,amount)
-    cekKoneksi()
-    sleep(1000)
-    bot:wrench(x,y)
-    sleep(1000)
-    bot:sendPacket(2, "action|dialog_return\ndialog_name|itemsucker_block\ntilex|" ..x.. "|\ntiley|" ..y .. "|\nbuttonClicked|retrieveitem\n\nchk_enablesucking|1")
-    sleep(4000)
-    bot:sendPacket(2, "action|dialog_return\ndialog_name|itemremovedfromsucker\ntilex|" ..x.. "|\ntiley|" ..y.. "|\nitemtoremove|"..amount)
-    sleep(1000)
+function retrieveGaia(x, y, amount)
+    retrieveItem(x, y, amount, "itemsucker_seed")
+end
+
+function retrieveUT(x, y, amount)
+    retrieveItem(x, y, amount, "itemsucker_block")
 end
 
 trashList = {1406,9346,5040,5042,5044,5032,5034,5036,5038,5024,5026,5028,7162,7164}
@@ -873,6 +724,15 @@ function trasher()
     end
 end
 
+function handleAction(message, a, b, actionFunction, ...)
+    if SAYING then
+        bot:say(message)
+    end
+    goesTo(a, b)
+    sleep(DELAYWARP)
+    actionFunction(...)
+end
+
 function main()
     for _, listWorld in ipairs(WORLDBLOCK) do
         listWorld = listWorld:upper()
@@ -882,36 +742,11 @@ function main()
             AWALB = gscan(BLOCKID)
             while AWALB > 0 do
                 if inv:findItem(BLOCKID) <= 0 then
-                    if SAYING then
-                        bot:say("OTW TAKE BLOCK")
-                    end
-                    goesTo(listWorld,IDWORLDBLOCK)
-                    sleep(DELAYWARP)
-                    takeBlock(listWorld)
-                end
-                if inv:findItem(SEEDID) >= 1 then
-                    if SAYING then
-                        bot:say("OTW DROP SEED")
-                    end
-                    RSeed(WORLDSEED)
-                    sleep(DELAYWARP)
-                    dropSeed()
-                end
-                if inv:findItem(BLOCKID) >= 1 then
-                    if SAYING then
-                        bot:say("OTW PNB")
-                    end
-                    RBreak(WORLDBREAK)
-                    sleep(DELAYWARP)
-                    PNB()
-                end
-                if inv:findItem(BLOCKID) <= 0 then
-                    if SAYING then
-                        bot:say("OTW TAKE BLOCK")
-                    end
-                    goesTo(listWorld,IDWORLDBLOCK)
-                    sleep(DELAYWARP)
-                    takeBlock(listWorld)
+                    handleAction("OTW TAKE BLOCK", listWorld, IDWORLDBLOCK, takeBlock, listWorld)
+                elseif inv:findItem(SEEDID) >= 1 then
+                    handleAction("OTW DROP SEED", WORLDSEED, IDWORLDSEED, dropSeed)
+                elseif inv:findItem(BLOCKID) >= 1 then
+                    handleAction("OTW PNB", WORLDBREAK, IDWORLDBREAK, PNB)
                 end
             end
         else
@@ -919,18 +754,11 @@ function main()
         end
         if AWALB == 0 then
             if USE_WEBHOOK then
-            powershell("NO BLOCK LEFT, BOT DONE",WEBHOOK_INFORMATION)
+                webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
             end
             sleep(300)
-        
             if inv:findItem(SEEDID) >= 1 then
-                if SAYING then
-                    bot:say("OTW DROP SEED")
-                end
-                goesTo(WORLDSEED, IDWORLDSEED)
-                sleep(DELAYWARP)
-                sleep(300)
-                dropSeed()
+                handleAction("OTW DROP SEED", WORLDSEED, IDWORLDSEED, dropSeed)
                 sleep(100)
             end
         end
@@ -942,14 +770,15 @@ function takePickaxe()
     sleep(3000)
     bot:collect(3)
     sleep(1000)
-    if inv:getItemCount(98) > 1 then
+    local pickaxeCount = inv:getItemCount(98)
+    if pickaxeCount > 1 then
         bot:wear(98)
-    else
+    elseif pickaxeCount == 0 then
         takePickaxe()
     end
     sleep(1000)
     while inv:getItemCount(98) > 1 do
-        bot:drop(98,inv:getItemCount(98) - 1)
+        bot:drop(98, pickaxeCount - 1)
         sleep(1000)
         break
     end
@@ -996,32 +825,25 @@ end
 
 if nemuHwid then
     print("HWID Matched, Running Script")
-    sleep(100)
     if USE_WEBHOOK then
-    powershell("HWID Matched, Running Script",WEBHOOK_INFORMATION)
-    end
-    if TAKE_PICKAXE then
-        if inv:getItemCount(98) < 1 then
-        sleep((INDEX_SLOT - 1) * 3000)
-        takePickaxe()
-        else
-        end
+        webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
     end
     sleep((INDEX_SLOT - 1) * 500)
+    if TAKE_PICKAXE and inv:getItemCount(98) < 1 then
+        sleep((INDEX_SLOT - 1) * 3000)
+        takePickaxe()
+    end
     main()
     bot:leaveWorld()
     sleep(2000)
     if AFTER_DONE_REMOVEBOT then
-    removeBot()
+        removeBot()
     else
-        bot:disconnect()
+        bot:stopScript()
     end
 else
     print("Wrong HWID / Not Registered HWID")
     sleep(100)
     getHWID(HWID())
     sleep(100)
-    if USE_WEBHOOK then
-    powershell("ID GAK SESUAI/KONTAK ADMIN NOWADAYS-SCHOOL/ALFIRST-STORE (linktr.ee/alfirst_store)",WEBHOOK_INFORMATION)
-    end
 end
