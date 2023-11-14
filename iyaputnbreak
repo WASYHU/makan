@@ -138,41 +138,7 @@ function webhookDate()
 	return os.date("%A, %B %d, %Y | %H:%M", Current_Time_Webhook)
 end
 
-function readDataFromFile()
-    local data = {}
-    local fileName = "bot_data.txt"
-    local file = io.open(fileName, "r")
-    if file then
-        local content = file:read("*a")
-        file:close()
-        for line in content:gmatch("[^\r\n]+") do
-            local key, value = line:match("(%S+)%s*=%s*(%S+)")
-            if key and value then
-                data[key] = tonumber(value) or value
-            end
-        end
-    end
-    return data
-end
-
-function writeDataToFile(data)
-    local fileName = "bot_data.txt"
-    local file = io.open(fileName, "w")
-    if file then
-        for key, value in pairs(data) do
-            file:write(key .. "=" .. tostring(value) .. "\n")
-        end
-        file:close()
-    end
-end
-
-data = readDataFromFile()
-
 function webhooks(link, edits)
-    storedBlock = data.CURRENT_BLOCK
-    storedSeed = data.CURRENT_SEED
-    storedMole = data.Mole
-
     te = os.time() - t
     descriptions = {}
 
@@ -242,9 +208,9 @@ function webhooks(link, edits)
         wh:send()
     end
 
-    CURRENT_BLOCK = storedBlock
-    CURRENT_SEED = storedSeed
-    Mole = storedMole
+    storedBlock = CURRENT_BLOCK
+    storedSeed = CURRENT_SEED
+    storedMole = Mole
 end
 
 function gscan(id)
@@ -479,7 +445,6 @@ function takeBlock(listWorld)
     if USE_WEBHOOK then
         if CURRENT_BLOCK <= storedBlock then
             storedBlock = CURRENT_BLOCK
-            writeDataToFile(data)
         end
         webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
     end
@@ -644,7 +609,6 @@ function dropSeed()
     if USE_WEBHOOK then
         if CURRENT_SEED > storedSeed then
             storedSeed = CURRENT_SEED
-            writeDataToFile(data)
         end
         webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
     end
@@ -663,9 +627,6 @@ function dropPack()
     end
     bot:moveTo(1, 0)
     sleep(500)
-    if USE_WEBHOOK then
-        webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
-    end
     for _, PACK in ipairs(IDPACK) do
         bot:drop(PACK, inv:getItemCount(PACK))
         sleep(500)
@@ -681,7 +642,6 @@ function dropPack()
         if USE_WEBHOOK then
             if Mole > storedMole then
                 storedMole = Mole
-                writeDataToFile(data)
             end
             webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
         end
