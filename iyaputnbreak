@@ -467,11 +467,11 @@ function takeBlock(listWorld)
             bot:collect(2)
             sleep(500)
             CURRENT_BLOCK = gscan(BLOCKID)
+            if USE_WEBHOOK then
                 if CURRENT_BLOCK <= data.CURRENT_BLOCK then
                     data.CURRENT_BLOCK = CURRENT_BLOCK
                     writeDataToFile(data)
                 end
-            if USE_WEBHOOK then
                 webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
             end
             if inv:findItem(BLOCKID) >= 1 then
@@ -640,11 +640,11 @@ function dropSeed()
         end
     end
     CURRENT_SEED = gscan(SEEDID)
+    if USE_WEBHOOK then
         if CURRENT_SEED > data.CURRENT_SEED then
             data.CURRENT_SEED = CURRENT_SEED
             writeDataToFile(data)
         end
-    if USE_WEBHOOK then
         webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
     end
 end
@@ -677,11 +677,11 @@ function dropPack()
         bot:findPath(math.floor(getLocal().posx/32) + 1, math.floor(getLocal().posy/32) + math.floor(gscan(PACK)/4000))
         sleep(500)
         Mole = gscan(PACK)
-        if Mole > data.Mole then
-            data.Mole = Mole
-            writeDataToFile(data)
-        end
         if USE_WEBHOOK then
+            if Mole > data.Mole then
+                data.Mole = Mole
+                writeDataToFile(data)
+            end
             webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
         end
     end
