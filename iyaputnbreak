@@ -832,6 +832,8 @@ end
 if nemuHwid then
     print("HWID Matched, Running Script")
     if USE_WEBHOOK then
+        writeDataToFile(data)
+        sleep(100)
         webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
     end
     sleep((INDEX_SLOT - 1) * 500)
