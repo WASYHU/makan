@@ -464,17 +464,17 @@ function takeBlock(listWorld)
             bot:collect(2)
             sleep(500)
             if inv:findItem(BLOCKID) >= 1 then
-            CURRENT_BLOCK = gscan(BLOCKID)
-            if USE_WEBHOOK then
-                if CURRENT_BLOCK <= data.CURRENT_BLOCK then
-                    data.CURRENT_BLOCK = CURRENT_BLOCK
-                    writeDataToFile(data)
-                end
-                webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
-            end
                 break
             end
         end
+    end
+    CURRENT_BLOCK = gscan(BLOCKID)
+    if USE_WEBHOOK then
+        if CURRENT_BLOCK <= data.CURRENT_BLOCK then
+            data.CURRENT_BLOCK = CURRENT_BLOCK
+            writeDataToFile(data)
+        end
+        webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
     end
 end
 
