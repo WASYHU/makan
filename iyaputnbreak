@@ -457,9 +457,6 @@ function takeBlock(listWorld)
         takeBlock(listWorld)
     end
     AWALB = gscan(BLOCKID)
-    if USE_WEBHOOK then
-        webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
-    end
     for _, al in pairs(world:getObjects()) do
         if al.id == BLOCKID then
             xal, yal = math.floor(al.x / 32), math.floor(al.y / 32)
