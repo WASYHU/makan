@@ -182,7 +182,7 @@ function webhooks(link, edits)
             description = statusBotDescription(status) 
         })
     end
-    writeDataToFile(data)
+
     -- Add header
     header = "SCRIPT PNB V2.5 BY NOWADAYS"
     table.insert(descriptions, "`" .. header .. "`")
@@ -487,9 +487,6 @@ end
 
 function PNB()
     RBreak(WORLDBREAK)
-    if USE_WEBHOOK then
-        webhooks(WEBHOOK_INFORMATION[1],WEBHOOK_INFORMATION[2])
-    end
     if bot:isInWorld(WORLDBREAK) then
         goesTo(WORLDBREAK,IDWORLDBREAK)
         sleep(1000)
