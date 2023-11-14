@@ -669,12 +669,12 @@ function dropPack()
         bot:drop(PACK, inv:getItemCount(PACK))
         sleep(500)
         while inv:getItemCount(PACK) > 0 do
-            bot:findPath(math.floor(getLocal().posx/32), math.floor(getLocal().posy/32) - math.floor(gscan(PACK)/4000))
+            bot:findPath(math.floor(getLocal().posx/32), math.floor(getLocal().posy/32) - math.floor(gscan(PACK)/2000))
             sleep(500)
             bot:drop(PACK, inv:getItemCount(PACK))
             sleep(500)
         end
-        bot:findPath(math.floor(getLocal().posx/32) + 1, math.floor(getLocal().posy/32) + math.floor(gscan(PACK)/4000))
+        bot:findPath(math.floor(getLocal().posx/32) + 1, math.floor(getLocal().posy/32) + math.floor(gscan(PACK)/2000))
         sleep(500)
         Mole = gscan(PACK)
         if USE_WEBHOOK then
