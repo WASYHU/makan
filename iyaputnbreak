@@ -57,6 +57,9 @@ totalGems = 0
 CURRENT_BLOCK = 0
 CURRENT_SEED = 0
 Mole = 0
+storedBlock = 0
+storedSeed = 0
+storedMole = 0
 LIST_BOT = {}
 INDEX_SLOT = 0
 --------dont touch--------
@@ -166,6 +169,10 @@ end
 data = readDataFromFile()
 
 function webhooks(link, edits)
+    storedBlock = data.CURRENT_BLOCK
+    storedSeed = data.CURRENT_SEED
+    storedMole = data.Mole
+
     te = os.time() - t
     descriptions = {}
 
@@ -235,9 +242,9 @@ function webhooks(link, edits)
         wh:send()
     end
 
-    CURRENT_BLOCK = data.CURRENT_BLOCK
-    CURRENT_SEED = data.CURRENT_SEED
-    Mole = data.Mole
+    CURRENT_BLOCK = storedBlock
+    CURRENT_SEED = storedSeed
+    Mole = storedMole
 end
 
 function gscan(id)
@@ -470,8 +477,8 @@ function takeBlock(listWorld)
     end
     CURRENT_BLOCK = gscan(BLOCKID)
     if USE_WEBHOOK then
-        if CURRENT_BLOCK <= data.CURRENT_BLOCK then
-            data.CURRENT_BLOCK = CURRENT_BLOCK
+        if CURRENT_BLOCK <= storedBlock then
+            storedBlock = CURRENT_BLOCK
             writeDataToFile(data)
         end
         webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
@@ -635,8 +642,8 @@ function dropSeed()
     end
     CURRENT_SEED = gscan(SEEDID)
     if USE_WEBHOOK then
-        if CURRENT_SEED > data.CURRENT_SEED then
-            data.CURRENT_SEED = CURRENT_SEED
+        if CURRENT_SEED > storedSeed then
+            storedSeed = CURRENT_SEED
             writeDataToFile(data)
         end
         webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
@@ -672,8 +679,8 @@ function dropPack()
         sleep(500)
         Mole = gscan(PACK)
         if USE_WEBHOOK then
-            if Mole > data.Mole then
-                data.Mole = Mole
+            if Mole > storedMole then
+                storedMole = Mole
                 writeDataToFile(data)
             end
             webhooks(WEBHOOK_INFORMATION[1], WEBHOOK_INFORMATION[2])
