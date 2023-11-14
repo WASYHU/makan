@@ -724,13 +724,22 @@ function trasher()
     end
 end
 
-function handleAction(message, a, b, actionFunction, ...)
+function handleAction(message, a, b, actionFunction, subWorld)
     if SAYING then
         bot:say(message)
     end
     goesTo(a, b)
     sleep(DELAYWARP)
-    actionFunction(...)
+    actionFunction(subWorld)
+end
+
+function handleAction1(message, a, b, actionFunction)
+    if SAYING then
+        bot:say(message)
+    end
+    goesTo(a, b)
+    sleep(DELAYWARP)
+    actionFunction()
 end
 
 function main()
@@ -744,9 +753,9 @@ function main()
                 if inv:findItem(BLOCKID) <= 0 then
                     handleAction("OTW TAKE BLOCK", listWorld, IDWORLDBLOCK, takeBlock, listWorld)
                 elseif inv:findItem(SEEDID) >= 1 then
-                    handleAction("OTW DROP SEED", WORLDSEED, IDWORLDSEED, dropSeed)
+                    handleAction1("OTW DROP SEED", WORLDSEED, IDWORLDSEED, dropSeed)
                 elseif inv:findItem(BLOCKID) >= 1 then
-                    handleAction("OTW PNB", WORLDBREAK, IDWORLDBREAK, PNB)
+                    handleAction1("OTW PNB", WORLDBREAK, IDWORLDBREAK, PNB)
                 end
             end
         else
@@ -758,7 +767,7 @@ function main()
             end
             sleep(300)
             if inv:findItem(SEEDID) >= 1 then
-                handleAction("OTW DROP SEED", WORLDSEED, IDWORLDSEED, dropSeed)
+                handleAction1("OTW DROP SEED", WORLDSEED, IDWORLDSEED, dropSeed)
                 sleep(100)
             end
         end
