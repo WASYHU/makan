@@ -143,6 +143,7 @@ function webhooks(link, edits)
         totalGems = totalGems + botInfo.gem_count
         table.insert(botData, { 
             name = botInfo.name,
+            level = botInfo.level,
             status = status, 
             description = statusBotDescription(status) 
         })
@@ -154,34 +155,10 @@ function webhooks(link, edits)
 
     for _, botInfo in ipairs(botData) do
         -- Format the output as `[NAMABOT] [LEVEL] [STATUS]`
-        table.insert(descriptions, string.format("<:growbot:992058196439072770> `[ %s ] [`%s`]`", botInfo.name, botInfo.description))
+        table.insert(descriptions, string.format("<:growbot:992058196439072770> `[ %s ] [ %s ] [`%s`]`", botInfo.name, botInfo.level, botInfo.description))
     end
     table.insert(descriptions, string.format("<:pgems:996716107845075015> `Total Gems: %s`\n", totalGems))
-    -- Add total blocks
-    totalBlock = "TOTAL BLOCK"
-    table.insert(descriptions, "`" .. totalBlock .. "`")
-    table.insert(descriptions, "`"..CURRENT_BLOCK.."`")
 
-    table.insert(descriptions, "")
-
-    totalSeed = "TOTAL SEED"
-    table.insert(descriptions, "`" .. totalSeed .. "`")
-    table.insert(descriptions, "`"..CURRENT_SEED.."`")
-
-    table.insert(descriptions, "")
-
-    -- Add ID_PACK information with names
-    totalPack = "TOTAL PACK"
-    table.insert(descriptions, "`" .. totalPack .. "`")
-    for _, PACK in ipairs(IDPACK) do
-        packName = getInfo(PACK).name
-        table.insert(descriptions, "`" .. string.format("%s : %s", packName, Mole) .. "`")
-    end
-
-    table.insert(descriptions, "")
-    table.insert(descriptions, "")
-    table.insert(descriptions, "UPTIME SC : "..math.floor(te/86400).." Days "..math.floor(te%86400/3600).." Hours "..math.floor(te%86400%3600/60).." Minutes")
-    -- Add webhook date
     table.insert(descriptions, "**[ALFIRST X NOWADAYS](https://linktr.ee/ALFIRST_STORE/) - <@"..DISCORDID..">**")
 
     wh = Webhook.new(link)
@@ -194,6 +171,15 @@ function webhooks(link, edits)
     wh.embed1.footer.text = webhookDate()
     wh.embed1.footer.icon_url = "https://cdn.growtopia.tech/items/"..BLOCKID..".png"
     wh.embed1.thumbnail = "https://cdn.growtopia.tech/items/"..BLOCKID..".png"
+    wh.embed1:addField(">> TOTAL SEED <<", CURRENT_SEED, true)
+    wh.embed1:addField(">> TOTAL BLOCK <<", CURRENT_BLOCK, true)
+
+    -- Add ID_PACK information with names
+    for _, PACK in ipairs(IDPACK) do
+        packName = getInfo(PACK).name
+        wh.embed1:addField(">> TOTAL PACK <<", packName.." : "..Mole, false)
+    end
+    wh.embed1:addField(">> UPTIME SCRIPT <<", math.floor(te/86400).." Days "..math.floor(te%86400/3600).." Hours "..math.floor(te%86400%3600/60).." Minutes ", false)
     if WEBHOOK_EDITED then
         wh:edit(edits)
     else
