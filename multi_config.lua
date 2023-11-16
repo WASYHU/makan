@@ -2,6 +2,12 @@
 bot = getBot()
 world = bot:getWorld()
 inv = bot:getInventory()
+t= os.time()
+botData = {}
+totalGems = 0
+CURRENT_BLOCK = 0
+CURRENT_SEED = 0
+Mole = 0
 botInfo = BOTS[bot.name]
 MODE = botInfo.MODE:upper()
 WORLD_LIST = botInfo.WORLD_LIST
@@ -25,6 +31,139 @@ bot.collect_range = 2
 bot.move_interval = 25
 bot.move_range = 2
 ---------------------
+function statusBotDescription(status)
+	if status == BotStatus.online then
+		return "<:online_badge:1172761015390306304>"
+	elseif status == BotStatus.offline then
+		return "<:Offline:1172763331493367880>"
+	elseif status == BotStatus.wrong_password then
+		return "Wrong Password"
+	elseif status == BotStatus.account_banned then
+		return "Account Banned"
+	elseif status == BotStatus.location_banned then
+		return "Location Banned"
+	elseif status == BotStatus.version_update then
+		return "Version Update"
+	elseif status == BotStatus.advanced_account_protection then
+		return "Advanced Account Protection"
+	elseif status == BotStatus.server_overload then
+		return "Server Overload"
+	elseif status == BotStatus.too_many_login then
+		return "Too Many Login"
+	elseif status == BotStatus.maintenance then
+		return "Maintenance"
+	elseif status == BotStatus.http_block then
+		return "Http Block"
+	elseif status == BotStatus.captcha_requested then
+		return "Captcha Requested"
+    elseif status == BotStatus.changing_subserver then
+        return "C. Subserver"
+	else 
+		return "-"
+	end
+end
+
+function webhookDate()
+	local Time_Difference_Webhook = 7 * 3600
+	local Current_Time_GMT = os.time(os.date("!*t"))
+	local Current_Time_Webhook = Current_Time_GMT + Time_Difference_Webhook
+	return os.date("%A, %B %d, %Y | %H:%M", Current_Time_Webhook)
+end
+
+function getKeterangan(worldName)
+    local keterangan = "-"  -- Default value
+
+    for _, world in ipairs(WORLD_LIST) do
+        if worldName == world then
+            if MODE == "HARVEST" then
+                keterangan = "HARVESTING"
+            elseif MODE == "PLANT" then
+                keterangan = "PLANTING"
+            end
+            break  -- Keluar dari loop jika sudah ditemukan
+        end
+    end
+
+    return keterangan
+end
+
+function webhooks(link, edits)
+    te = os.time() - t
+    descriptions = {}
+
+    botData = {}
+    totalGems = 0
+
+    for i, bot in pairs(getBots()) do
+        botInfo = getBot(bot.name)
+        status = botInfo.status
+        totalGems = totalGems + botInfo.gem_count
+        worldName = botInfo:getWorld().name  -- Menambahkan deteksi world
+
+        local keterangan
+        -- Menentukan keterangan berdasarkan kondisi
+        if worldName == STORAGE_SEED[1] then
+            if MODE == "HARVEST" then
+                keterangan = "DROP SEED"
+            elseif MODE == "PLANT" then
+                keterangan = "TAKE SEED"
+            end
+        elseif worldName == STORAGE_BLOCK[1] then
+            keterangan = "DROP BLOCK"
+        elseif worldName == STORAGE_PACK[1] then
+            keterangan = "DROP PACK"
+        else
+            keterangan = getKeterangan(worldName)
+        end
+
+        table.insert(botData, { 
+            name = botInfo.name,
+            status = status, 
+            description = statusBotDescription(status),
+            world = worldName,
+            keterangan = keterangan,  -- Menambahkan keterangan berdasarkan worldName
+        })
+    end
+
+    -- Add header
+    header = "SCRIPT PTHT BY NOWADAYS"
+    table.insert(descriptions, "`" .. header .. "`")
+
+    for _, botInfo in ipairs(botData) do
+        -- Format the output as `[NAMABOT] [STATUS] [KETERANGAN]`
+        table.insert(descriptions, string.format("<:growbot:992058196439072770> `[ %s ] [`%s`] [ %s ]`", botInfo.name, botInfo.description, botInfo.keterangan))
+    end
+    table.insert(descriptions, string.format("<:pgems:996716107845075015> `Total Gems: %s`\n", totalGems))
+
+    table.insert(descriptions, "**[ALFIRST X NOWADAYS](https://linktr.ee/ALFIRST_STORE/) - <@"..DISCORD_ID..">**")
+
+    wh = Webhook.new(link)
+    wh.username = "[ALFIRST-STORE]"
+    wh.avatar_url = "https://mystickermania.com/cdn/stickers/anime/jujutsu-kaisen-satoru-gojo-512x512.png"
+    wh.embed1.use = true
+    wh.embed1.title = "PTHT LOGS!"
+    wh.embed1.description = table.concat(descriptions, "\n") -- Concatenate bot names with newline
+    wh.embed1.color = math.random(1000000, 9999999)
+    wh.embed1.thumbnail = "https://cdn.growtopia.tech/items/"..BLOCK_ID..".png"
+    wh.embed1.footer.text = webhookDate()
+    wh.embed1.footer.icon_url = "https://cdn.growtopia.tech/items/"..BLOCK_ID..".png"
+    wh.embed1:addField("TOTAL SEED", CURRENT_SEED, true)
+    wh.embed1:addField("TOTAL BLOCK", CURRENT_BLOCK, true)
+
+    -- Add ID_PACK information with names
+    for i = 1, #ID_PACK do
+        packName = getInfo(ID_PACK[i]).name
+        wh.embed1:addField("TOTAL PACK", packName.." : "..Mole, false)
+    end
+    wh.embed1:addField("UPTIME SCRIPT", math.floor(te/86400).." Days "..math.floor(te%86400/3600).." Hours "..math.floor(te%86400%3600/60).." Minutes ", false)
+
+    if WEBHOOK_EDITED then
+        wh:edit(edits)
+    else
+        wh:send()
+    end
+end
+
 function punch(x,y)
     local packet = GameUpdatePacket.new()
     packet.type = 3
@@ -105,12 +244,33 @@ function goesTo(a,b)
     end
 end
 
+function handleAccountBanned()
+    if USE_WEBHOOK then
+        webhooks(LINK_WEBHOOK,ID_MESSAGE)
+    end
+    bot.auto_reconnect = false
+    bot:stopScript()
+end
+
+function handleConnection()
+    if USE_WEBHOOK then
+        webhooks(LINK_WEBHOOK,ID_MESSAGE)
+    end
+    bot:connect()
+    bot.auto_reconnect = true
+    bot.reconnect_interval = 15
+    sleep(15000)
+end
+
 function reconList(txt)
-    while bot.status ~= 1 do
-        bot:connect()
-        bot.auto_reconnect = true
-        bot.reconnect_interval = 15
-        sleep(15000)
+    if USE_WEBHOOK then
+        webhooks(LINK_WEBHOOK,ID_MESSAGE)
+    end
+    if bot.status == BotStatus.account_banned then
+        handleAccountBanned()
+    end
+    while not (bot.status == BotStatus.online or bot.status == BotStatus.account_banned) do
+        handleConnection()
     end
     if world.name ~= txt then
         goesTo(txt,ID_WORLD_LIST)
@@ -127,11 +287,14 @@ function reconList(txt)
 end
 
 function reconSeed(txt)
-    while bot.status ~= 1 do
-        bot:connect()
-        bot.auto_reconnect = true
-        bot.reconnect_interval = 15
-        sleep(15000)
+    if USE_WEBHOOK then
+        webhooks(LINK_WEBHOOK,ID_MESSAGE)
+    end
+    if bot.status == BotStatus.account_banned then
+        handleAccountBanned()
+    end
+    while not (bot.status == BotStatus.online or bot.status == BotStatus.account_banned) do
+        handleConnection()
     end
     if world.name ~= txt then
         goesTo(txt,STORAGE_SEED[2])
@@ -148,11 +311,14 @@ function reconSeed(txt)
 end
 
 function reconBlock(txt)
-    while bot.status ~= 1 do
-        bot:connect()
-        bot.auto_reconnect = true
-        bot.reconnect_interval = 15
-        sleep(15000)
+    if USE_WEBHOOK then
+        webhooks(LINK_WEBHOOK,ID_MESSAGE)
+    end
+    if bot.status == BotStatus.account_banned then
+        handleAccountBanned()
+    end
+    while not (bot.status == BotStatus.online or bot.status == BotStatus.account_banned) do
+        handleConnection()
     end
     if world.name ~= txt then
         goesTo(txt,STORAGE_BLOCK[2])
@@ -169,11 +335,14 @@ function reconBlock(txt)
 end
 
 function reconPack(txt)
-    while bot.status ~= 1 do
-        bot:connect()
-        bot.auto_reconnect = true
-        bot.reconnect_interval = 15
-        sleep(15000)
+    if USE_WEBHOOK then
+        webhooks(LINK_WEBHOOK,ID_MESSAGE)
+    end
+    if bot.status == BotStatus.account_banned then
+        handleAccountBanned()
+    end
+    while not (bot.status == BotStatus.online or bot.status == BotStatus.account_banned) do
+        handleConnection()
     end
     if world.name ~= txt then
         goesTo(txt,STORAGE_PACK[2])
@@ -204,6 +373,9 @@ end
 
 function takeSeed()
     if bot:isInWorld(STORAGE_SEED[1]) then
+        if USE_WEBHOOK then
+            webhooks(LINK_WEBHOOK,ID_MESSAGE)
+        end
         for _,sid in pairs(world:getObjects()) do
             if sid.id == SEED_ID then
                 xw = math.floor(sid.x / 32)
@@ -215,6 +387,10 @@ function takeSeed()
                 if inv:findItem(SEED_ID) >= 1 then
                     break
                 end
+            end
+            CURRENT_SEED = gscan(SEED_ID)
+            if USE_WEBHOOK then
+                webhooks(LINK_WEBHOOK,ID_MESSAGE)
             end
         end
     else
@@ -258,6 +434,9 @@ end
 
 function plant(list)
     if bot:isInWorld(list) then
+        if USE_WEBHOOK then
+            webhooks(LINK_WEBHOOK,ID_MESSAGE)
+        end
     count = 0
         for y= 1,53,2 do
             if count%2 == 0 then
@@ -303,6 +482,9 @@ function plant(list)
 end
 
 function harvest(list)
+    if USE_WEBHOOK then
+        webhooks(LINK_WEBHOOK,ID_MESSAGE)
+    end
     tkz()
     count = 0
         for y= 1,53,2 do
@@ -353,6 +535,9 @@ function dropSeed()
             sleep(500)
         end
         CURRENT_SEED = gscan(SEED_ID)
+        if USE_WEBHOOK then
+            webhooks(LINK_WEBHOOK,ID_MESSAGE)
+        end
     else
         dropSeed()
     end
@@ -383,7 +568,10 @@ function dropBlock()
                 sleep(500)
             end
         end
-        CURRENT_SEED = gscan(BLOCK_ID)
+        CURRENT_BLOCK = gscan(BLOCK_ID)
+        if USE_WEBHOOK then
+            webhooks(LINK_WEBHOOK,ID_MESSAGE)
+        end
     else
         dropBlock()
     end
@@ -416,6 +604,10 @@ function dropPack()
             end
         bot:moveTo(1,0)
         sleep(500)
+        Mole = gscan(ID_PACK[i])
+        if USE_WEBHOOK then
+            webhooks(LINK_WEBHOOK,ID_MESSAGE)
+        end
         end
     else
         dropPack()
@@ -468,7 +660,8 @@ function mainHT()
             reconList(list)
         end
         if CheckTree() == 0 then
-            sleep(2000)
+            dropBlock()
+            dropSeed()
         end
     end
 bot.auto_reconnect = false
@@ -508,6 +701,7 @@ function mainPT()
             reconList(list)
         end
         if CheckEmptyTile() == 0 then
+            dropSeed()
         end
     end
 bot.auto_reconnect = false
@@ -540,10 +734,16 @@ end
 
 if verifyLicense(LICENSE) then
     print("Matched License!, Running SC")
+    if USE_WEBHOOK then
+        webhooks(LINK_WEBHOOK,ID_MESSAGE)
+    end
     sleep(100)
     if MODE == "HARVEST" then
         mainHT()
     elseif MODE == "PLANT" then
         mainPT()
+    end
+    if USE_WEBHOOK then
+        webhooks(LINK_WEBHOOK,ID_MESSAGE)
     end
 end
