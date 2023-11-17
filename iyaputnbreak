@@ -705,17 +705,15 @@ function takePickaxe()
     sleep(3000)
     bot:collect(3)
     sleep(1000)
-    local pickaxeCount = inv:getItemCount(98)
-    if pickaxeCount > 1 then
+    if inv:getItemCount(98) > 1 then
         bot:wear(98)
-    elseif pickaxeCount == 0 then
+    elseif inv:getItemCount(98) == 0 then
         takePickaxe()
     end
     sleep(1000)
     while inv:getItemCount(98) > 1 do
-        bot:drop(98, pickaxeCount - 1)
+        bot:drop(98, inv:getItemCount(98) - 1)
         sleep(1000)
-        break
     end
 end
 
