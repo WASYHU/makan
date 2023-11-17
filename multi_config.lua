@@ -200,7 +200,7 @@ function CheckTree()
     m=0
     for y = 1,53,2 do
         for x = 0,99,1 do
-            if world:getTile(x,y).fg == SEED_ID and world:getTile(x,y+1).fg ~= 0 then
+            if world:getTile(x,y).fg == SEED_ID and world:getTile(x,y):canHarvest() then
             m = m + 1
             end
         end
