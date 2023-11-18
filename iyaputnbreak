@@ -179,14 +179,14 @@ function webhooks(link, edits)
     wh.embed1.title = "PNB LOGS!"
     wh.embed1.description = table.concat(descriptions, "\n") -- Concatenate bot names with newline
     wh.embed1.color = math.random(1000000, 9999999)
-    wh.embed1.thumbnail = "https://cdn.growtopia.tech/items/"..BLOCK_ID..".png"
+    wh.embed1.thumbnail = "https://cdn.growtopia.tech/items/"..BLOCKID..".png"
     wh.embed1:addField("Online Bots",onlineCount , true)
     wh.embed1:addField("Offline Bots",offlineCount , true)
     wh.embed1:addField("UPTIME SCRIPT", math.floor(te/86400).." Days "..math.floor(te%86400/3600).." Hours "..math.floor(te%86400%3600/60).." Minutes ", false)
     wh.embed2.use = true
     wh.embed2.color = math.random(1000000, 9999999)
     wh.embed2.footer.text = webhookDate()
-    wh.embed2.footer.icon_url = "https://cdn.growtopia.tech/items/"..BLOCK_ID..".png"
+    wh.embed2.footer.icon_url = "https://cdn.growtopia.tech/items/"..BLOCKID..".png"
     wh.embed2:addField("| TOTAL SEED |", CURRENT_SEED, true)
     wh.embed2:addField("| TOTAL BLOCK |", CURRENT_BLOCK, true)
 
