@@ -149,13 +149,24 @@ function webhooks(link, edits)
         })
     end
 
+    onlineCount = 0
+    offlineCount = 0
+
+    for index, botInfo in ipairs(botData) do
+        if botInfo.status == BotStatus.online then
+            onlineCount = onlineCount + 1
+        else
+            offlineCount = offlineCount + 1
+        end
+    end
+
     -- Add header
     header = "SCRIPT PNB V2.5 BY NOWADAYS"
     table.insert(descriptions, "`" .. header .. "`")
 
-    for _, botInfo in ipairs(botData) do
+    for urutan, botInfo in ipairs(botData) do
         -- Format the output as `[NAMABOT] [LEVEL] [STATUS]`
-        table.insert(descriptions, string.format("<:growbot:992058196439072770> `[ %s ] [ %s ] [`%s`]`", botInfo.name, botInfo.level, botInfo.description))
+        table.insert(descriptions, string.format("`[ %s ] [ %s ] [ %s ] [`%s`]`",urutan , botInfo.name, botInfo.level, botInfo.description))
     end
     table.insert(descriptions, string.format("<:pgems:996716107845075015> `Total Gems: %s`\n", totalGems))
 
@@ -168,18 +179,29 @@ function webhooks(link, edits)
     wh.embed1.title = "PNB LOGS!"
     wh.embed1.description = table.concat(descriptions, "\n") -- Concatenate bot names with newline
     wh.embed1.color = math.random(1000000, 9999999)
-    wh.embed1.footer.text = webhookDate()
-    wh.embed1.footer.icon_url = "https://cdn.growtopia.tech/items/"..BLOCKID..".png"
-    wh.embed1.thumbnail = "https://cdn.growtopia.tech/items/"..BLOCKID..".png"
-    wh.embed1:addField(">> TOTAL SEED <<", CURRENT_SEED, true)
-    wh.embed1:addField(">> TOTAL BLOCK <<", CURRENT_BLOCK, true)
+    wh.embed1.thumbnail = "https://cdn.growtopia.tech/items/"..BLOCK_ID..".png"
+    wh.embed1:addField("Online Bots",onlineCount , true)
+    wh.embed1:addField("Offline Bots",offlineCount , true)
+    wh.embed1:addField("UPTIME SCRIPT", math.floor(te/86400).." Days "..math.floor(te%86400/3600).." Hours "..math.floor(te%86400%3600/60).." Minutes ", false)
+    wh.embed2.use = true
+    wh.embed2.color = math.random(1000000, 9999999)
+    wh.embed2.footer.text = webhookDate()
+    wh.embed2.footer.icon_url = "https://cdn.growtopia.tech/items/"..BLOCK_ID..".png"
+    wh.embed2:addField("| TOTAL SEED |", CURRENT_SEED, true)
+    wh.embed2:addField("| TOTAL BLOCK |", CURRENT_BLOCK, true)
 
     -- Add ID_PACK information with names
+    local totalPacks = ""
+
     for _, PACK in ipairs(IDPACK) do
-        packName = getInfo(PACK).name
-        wh.embed1:addField(">> TOTAL PACK <<", packName.." : "..Mole, false)
+        local packInfo = getInfo(PACK)
+        local packName = packInfo.name
+
+        totalPacks = totalPacks .. packName .. " : " .. Mole .. "\n"
     end
-    wh.embed1:addField(">> UPTIME SCRIPT <<", math.floor(te/86400).." Days "..math.floor(te%86400/3600).." Hours "..math.floor(te%86400%3600/60).." Minutes ", false)
+
+    wh.embed2:addField("| TOTAL PACK |", totalPacks, true)
+
     if WEBHOOK_EDITED then
         wh:edit(edits)
     else
