@@ -615,7 +615,7 @@ function dropPack()
         sleep(500)
         for i = 1, #ID_PACK do
         lasA = math.floor(getLocal().posx/32)
-        lasB = math.floor(getLocal().posy/32)+math.floor(gscan(ID_PACK[i])/2000)
+        lasB = math.floor(getLocal().posy/32)-math.floor(gscan(ID_PACK[i])/2000)
         lasY = math.floor(getLocal().posy/32)
         bot:drop(ID_PACK[i],inv:getItemCount(ID_PACK[i]))
         sleep(500)
