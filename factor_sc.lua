@@ -616,11 +616,11 @@ end
 function mainSeed()
     while true do
         harvest()
-        sleep(500)
+        sleep(1000)
         plant()
-        sleep(500)
+        sleep(1000)
         goPatokan()
-        sleep(500)
+        sleep(1000)
         while inv:findItem(BLOCK_ID) > 0 do
             bot.ignore_gems = false
             PNB()
@@ -630,22 +630,22 @@ function mainSeed()
                 bot.ignore_gems = false
             end
         end
-        sleep(500)
+        sleep(1000)
         storeSeed()
-        sleep(500)
+        sleep(1000)
     end
 end
 
 function mainFlour()
     while true do
         harvest()
-        sleep(500)
+        sleep(1000)
         plant()
-        sleep(500)
+        sleep(1000)
         storeFlour()
-        sleep(500)
+        sleep(1000)
         goPatokan()
-        sleep(500)
+        sleep(1000)
         while inv:findItem(BLOCK_ID) > 0 do
             bot.ignore_gems = false
             PNB()
