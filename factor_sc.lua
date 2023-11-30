@@ -366,6 +366,11 @@ function harvest()
     for _, tile in pairs(world:getTiles()) do
         while world:getTile(tile.x,posBotY).fg == SEED_ID and world:getTile(tile.x,posBotY):canHarvest() and inv:getItemCount(BLOCK_ID) <= 180 do
         cekKoneksi()
+
+        while not world:getTile(tile.x,posBotY):canHarvest() do
+            sleep(2000)
+        end
+
         bot:findPath(tile.x, posBotY)
         sleep(DELAY_HARVEST)
         punch(0, 0)
