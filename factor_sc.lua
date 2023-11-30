@@ -242,6 +242,14 @@ function writePackValuesToFile(filePath, packValues)
     end
 end
 
+function droped(itemid, amount)
+    bot:sendPacket(2,"action|drop\nitemID|"..itemid)
+    sleep(1000)
+    bot:sendPacket(2,"action|dialog_return\ndialog_name|drop_item\nitemID|"..itemid.."|\ncount|"..amount)
+    sleep(500)
+end
+
+
 function baris()
     xPatokan = {}
     yPatokan = {}
@@ -354,7 +362,7 @@ function trasher()
         if inv:getItemCount(trash) >= 100 then
           bot:trash(trash)
           sleep(1000)
-          bot:trash(trash,inv:findItem(trash))
+          bot:trash(trash,inv:getItemCount(trash))
           sleep(1000)
         end
     end
@@ -363,31 +371,33 @@ end
 function harvest()
     bot:say(getRandomKata(List_kata))
     posBotY = math.floor(getLocal().posy/32)
-    for _, tile in pairs(world:getTiles()) do
-        if world:getTile(tile.x,posBotY).fg == SEED_ID and world:getTile(tile.x,posBotY):canHarvest() and inv:getItemCount(BLOCK_ID) <= 180 then
 
-            while not world:getTile(tile.x,posBotY):canHarvest() do
-                sleep(2000)
-            end
-
-        bot:findPath(tile.x, posBotY)
-        sleep(DELAY_HARVEST)
-            while world:getTile(tile.x,posBotY).fg ~= 0 do
-                punch(0, 0)
+    if inv:getItemCount(BLOCK_ID) < 50 then
+        for _, tile in pairs(world:getTiles()) do
+            if world:getTile(tile.x,posBotY).fg == SEED_ID and world:getTile(tile.x,posBotY):canHarvest() and inv:getItemCount(BLOCK_ID) < 180 then
+                while not world:getTile(tile.x,posBotY):canHarvest() do
+                    sleep(2000)
+                end
+                bot:findPath(tile.x, posBotY)
                 sleep(DELAY_HARVEST)
-                bot:collect(2)
-            end
-        end 
-    end
-    bot:collect(2)
-    sleep(500)
+                while world:getTile(tile.x,posBotY).fg ~= 0 do
+                    punch(0, 0)
+                    sleep(DELAY_HARVEST)
+                    bot:collect(2)
+                end
+            end 
+        end
+        bot:collect(2)
+        sleep(500)
+    end 
 end
+
 
 function plant()
     bot:say(getRandomKata(List_kata))
     posBotY = math.floor(getLocal().posy/32)
     for _, tile in pairs(world:getTiles()) do
-        if world:getTile(tile.x,posBotY).fg == 0 and world:getTile(tile.x,posBotY+1).fg ~= 0 and world:getTile(tile.x,posBotY+1).fg ~= SEED_ID and inv:findItem(SEED_ID) > 0 then
+        if world:getTile(tile.x,posBotY).fg == 0 and world:getTile(tile.x,posBotY+1).fg ~= 0 and world:getTile(tile.x,posBotY+1).fg ~= SEED_ID and inv:getItemCount(SEED_ID) > 1 then
         bot:findPath(tile.x, posBotY)
         sleep(DELAY_PLANT)
             while world:getTile(tile.x,posBotY).fg == 0 do
@@ -430,7 +440,7 @@ function PNB()
     cekKoneksi()
     posBreakX = math.floor(getLocal().posx/32)
     posBreakY = math.floor(getLocal().posy/32)
-    while inv:findItem(BLOCK_ID) > 0 do
+    while inv:getItemCount(BLOCK_ID) > 1 do
         if world:getTile(posBreakX-1,posBreakY).fg == 0 or world:getTile(posBreakX-1,posBreakY).bg == 0 then
             pasang(-1,0,BLOCK_ID)
             sleep(DELAY_PLACE)
@@ -461,20 +471,25 @@ function dropFlour()
     bot.auto_collect = false
     if bot:isInWorld(WORLD_STORAGE[1]) then
         sleep(200)
-        bot:moveTo(1,0)
-        sleep(500)
-        bot:drop(4562,inv:getItemCount(4562))
-        sleep(500)
+        Flour = gscan(4562)
+        sleep(200)
+        lastX = math.floor(getLocal().posx/32) + math.ceil(Flour/4000)
+        lastY = math.floor(getLocal().posy/32)
+        bot:findPath(lastX, lastY)
+        sleep(200)
+        droped(4562,inv:getItemCount(4562))
+        sleep(200)
         while inv:getItemCount(4562) > 0 do
-            bot:moveTo(1,0)
+            bot:findPath(lastX+1, lastY)
             sleep(200)
-            bot:drop(4562,inv:getItemCount(4562))
-            sleep(500)
+            droped(4562,inv:getItemCount(4562))
+            sleep(200)
         end
         CURRENT_RESULT = gscan(4562)
         webhooks(LINK_WEBHOOK, ID_MESSAGE)
     else
         dropFlour()
+        sleep(1000)
     end
 end
 
@@ -483,20 +498,25 @@ function dropSeed()
     bot.auto_collect = false
     if bot:isInWorld(WORLD_STORAGE[1]) then
         sleep(200)
-        bot:moveTo(1,0)
-        sleep(500)
-        bot:drop(SEED_ID,inv:getItemCount(SEED_ID))
-        sleep(500)
+        Seeder = gscan(SEED_ID)
+        sleep(200)
+        lastX = math.floor(getLocal().posx/32) + math.ceil(Seeder/4000)
+        lastY = math.floor(getLocal().posy/32)
+        bot:findPath(lastX, lastY)
+        sleep(200)
+        droped(SEED_ID,inv:getItemCount(SEED_ID))
+        sleep(200)
         while inv:getItemCount(SEED_ID) > 0 do
-            bot:moveTo(1,0)
+            bot:findPath(lastX+1, lastY)
             sleep(200)
-            bot:drop(SEED_ID,inv:getItemCount(SEED_ID))
-            sleep(500)
+            droped(SEED_ID,inv:getItemCount(SEED_ID))
+            sleep(200)
         end
         CURRENT_RESULT = gscan(SEED_ID)
         webhooks(LINK_WEBHOOK, ID_MESSAGE)
     else
         dropSeed()
+        sleep(1000)
     end
 end
 
@@ -504,6 +524,7 @@ function dropPack()
     Reconnect(WORLD_PACK[1],WORLD_PACK[2])
     while not bot:isInWorld(WORLD_PACK[1]) do
         dropPack()
+        sleep(1000)
     end
     sleep(200)
     while bot.gem_count >= PRICE_PACK do
@@ -513,12 +534,12 @@ function dropPack()
     bot:moveTo(1, 0)
     sleep(500)
     for i = 1, #ID_PACK do
-        bot:drop(ID_PACK[i], inv:getItemCount(ID_PACK[i]))
+        droped(ID_PACK[i], inv:getItemCount(ID_PACK[i]))
         sleep(500)
         while inv:getItemCount(ID_PACK[i]) > 0 do
             bot:findPath(math.floor(getLocal().posx/32), math.floor(getLocal().posy/32) - math.floor(gscan(ID_PACK[i])/2000))
             sleep(500)
-            bot:drop(ID_PACK[i], inv:getItemCount(ID_PACK[i]))
+            droped(ID_PACK[i], inv:getItemCount(ID_PACK[i]))
             sleep(500)
         end
         bot:findPath(math.floor(getLocal().posx/32), math.floor(getLocal().posy/32) + math.floor(gscan(ID_PACK[i])/2000))
@@ -535,7 +556,7 @@ function dropPack()
 end
 
 function storeFlour()
-    if CheckEmptyTile() == 0 and inv:findItem(SEED_ID) > 0 and inv:findItem(BLOCK_ID) >= 150 then
+    if CheckEmptyTile() == 0 and inv:getItemCount(SEED_ID) > 1 and inv:getItemCount(BLOCK_ID) >= 150 then
         grindWheat()
         sleep(100)
         dropFlour()
@@ -561,7 +582,7 @@ function storeFlour()
 end
 
 function storeSeed()
-    if CheckEmptyTile() == 0 and inv:findItem(SEED_ID) > 0 then
+    if CheckEmptyTile() == 0 and inv:getItemCount(SEED_ID) > 1 then
         dropSeed()
         sleep(100)
         Reconnect(WORLD_PABRIK[1],WORLD_PABRIK[2])
@@ -599,7 +620,7 @@ function takePickaxe()
     end
     sleep(1000)
     while inv:getItemCount(98) > 1 do
-        bot:drop(98, inv:getItemCount(98) - 1)
+        droped(98, inv:getItemCount(98) - 1)
         sleep(1000)
     end
 end
@@ -628,7 +649,7 @@ function mainSeed()
         sleep(1000)
         goPatokan()
         sleep(1000)
-        while inv:findItem(BLOCK_ID) > 0 do
+        while inv:getItemCount(BLOCK_ID) > 1 do
             bot.ignore_gems = false
             PNB()
             if IGNORE_GEMS then
@@ -653,7 +674,7 @@ function mainFlour()
         sleep(1000)
         goPatokan()
         sleep(1000)
-        while inv:findItem(BLOCK_ID) > 0 do
+        while inv:getItemCount(BLOCK_ID) > 1 do
             bot.ignore_gems = false
             PNB()
             if IGNORE_GEMS then
