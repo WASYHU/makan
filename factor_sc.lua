@@ -364,19 +364,19 @@ function harvest()
     bot:say(getRandomKata(List_kata))
     posBotY = math.floor(getLocal().posy/32)
     for _, tile in pairs(world:getTiles()) do
-        while world:getTile(tile.x,posBotY).fg == SEED_ID and world:getTile(tile.x,posBotY):canHarvest() and inv:getItemCount(BLOCK_ID) <= 180 do
-        cekKoneksi()
+        if world:getTile(tile.x,posBotY).fg == SEED_ID and world:getTile(tile.x,posBotY):canHarvest() and inv:getItemCount(BLOCK_ID) <= 180 then
 
-        while not world:getTile(tile.x,posBotY):canHarvest() do
-            sleep(2000)
-        end
+            while not world:getTile(tile.x,posBotY):canHarvest() do
+                sleep(2000)
+            end
 
         bot:findPath(tile.x, posBotY)
         sleep(DELAY_HARVEST)
-        punch(0, 0)
-        sleep(DELAY_HARVEST)
-        bot:collect(2)
-        sleep(DELAY_HARVEST)
+            while world:getTile(tile.x,posBotY).fg ~= 0 do
+                punch(0, 0)
+                sleep(DELAY_HARVEST)
+                bot:collect(2)
+            end
         end 
     end
     bot:collect(2)
@@ -387,12 +387,13 @@ function plant()
     bot:say(getRandomKata(List_kata))
     posBotY = math.floor(getLocal().posy/32)
     for _, tile in pairs(world:getTiles()) do
-        while world:getTile(tile.x,posBotY).fg == 0 and world:getTile(tile.x,posBotY+1).fg ~= 0 and world:getTile(tile.x,posBotY+1).fg ~= SEED_ID and inv:findItem(SEED_ID) > 0 do
-        cekKoneksi()
+        if world:getTile(tile.x,posBotY).fg == 0 and world:getTile(tile.x,posBotY+1).fg ~= 0 and world:getTile(tile.x,posBotY+1).fg ~= SEED_ID and inv:findItem(SEED_ID) > 0 then
         bot:findPath(tile.x, posBotY)
         sleep(DELAY_PLANT)
-        pasang(0, 0, SEED_ID)
-        sleep(DELAY_PLANT)
+            while world:getTile(tile.x,posBotY).fg == 0 do
+                pasang(0, 0, SEED_ID)
+                sleep(DELAY_PLANT)
+            end
         end 
     end
 end
@@ -418,6 +419,7 @@ function goPatokan()
         if world:getTile(tile.x,posBotY).fg == PATOKAN then
             cekKoneksi()
             bot:findPath(tile.x,posBotY)
+            sleep(100)
             break
         end
     end
