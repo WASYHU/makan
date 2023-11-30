@@ -242,14 +242,6 @@ function writePackValuesToFile(filePath, packValues)
     end
 end
 
-function droped(itemid, amount)
-    bot:sendPacket(2,"action|drop\nitemID|"..itemid)
-    sleep(1000)
-    bot:sendPacket(2,"action|dialog_return\ndialog_name|drop_item\nitemID|"..itemid.."|\ncount|"..amount)
-    sleep(500)
-end
-
-
 function baris()
     xPatokan = {}
     yPatokan = {}
@@ -380,7 +372,7 @@ function harvest()
                 end
                 bot:findPath(tile.x, posBotY)
                 sleep(DELAY_HARVEST)
-                while world:getTile(tile.x,posBotY).fg ~= 0 do
+                while world:getTile(tile.x,posBotY).fg ~= 0 and world:getTile(tile.x,posBotY).fg == SEED_ID do
                     punch(0, 0)
                     sleep(DELAY_HARVEST)
                     bot:collect(2)
@@ -477,12 +469,12 @@ function dropFlour()
         lastY = math.floor(getLocal().posy/32)
         bot:findPath(lastX, lastY)
         sleep(200)
-        droped(4562,inv:getItemCount(4562))
+        bot:drop(4562,inv:getItemCount(4562))
         sleep(200)
         while inv:getItemCount(4562) > 0 do
             bot:findPath(lastX+1, lastY)
             sleep(200)
-            droped(4562,inv:getItemCount(4562))
+            bot:drop(4562,inv:getItemCount(4562))
             sleep(200)
         end
         CURRENT_RESULT = gscan(4562)
@@ -504,12 +496,12 @@ function dropSeed()
         lastY = math.floor(getLocal().posy/32)
         bot:findPath(lastX, lastY)
         sleep(200)
-        droped(SEED_ID,inv:getItemCount(SEED_ID))
+        bot:drop(SEED_ID,inv:getItemCount(SEED_ID))
         sleep(200)
         while inv:getItemCount(SEED_ID) > 0 do
             bot:findPath(lastX+1, lastY)
             sleep(200)
-            droped(SEED_ID,inv:getItemCount(SEED_ID))
+            bot:drop(SEED_ID,inv:getItemCount(SEED_ID))
             sleep(200)
         end
         CURRENT_RESULT = gscan(SEED_ID)
@@ -534,12 +526,12 @@ function dropPack()
     bot:moveTo(1, 0)
     sleep(500)
     for i = 1, #ID_PACK do
-        droped(ID_PACK[i], inv:getItemCount(ID_PACK[i]))
+        bot:drop(ID_PACK[i], inv:getItemCount(ID_PACK[i]))
         sleep(500)
         while inv:getItemCount(ID_PACK[i]) > 0 do
             bot:findPath(math.floor(getLocal().posx/32), math.floor(getLocal().posy/32) - math.floor(gscan(ID_PACK[i])/2000))
             sleep(500)
-            droped(ID_PACK[i], inv:getItemCount(ID_PACK[i]))
+            bot:drop(ID_PACK[i], inv:getItemCount(ID_PACK[i]))
             sleep(500)
         end
         bot:findPath(math.floor(getLocal().posx/32), math.floor(getLocal().posy/32) + math.floor(gscan(ID_PACK[i])/2000))
@@ -620,7 +612,7 @@ function takePickaxe()
     end
     sleep(1000)
     while inv:getItemCount(98) > 1 do
-        droped(98, inv:getItemCount(98) - 1)
+        bot:drop(98, inv:getItemCount(98) - 1)
         sleep(1000)
     end
 end
