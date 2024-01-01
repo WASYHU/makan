@@ -114,7 +114,6 @@ end
 function baris()
     ck()
     lp("baris")
-    warp(WORLD_PABRIK[1],WORLD_PABRIK[2])
     ct = 0
     for _, tile in pairs(getTiles()) do
         if tile.fg == PATOKAN or tile.bg == PATOKAN then
@@ -283,8 +282,10 @@ end
 
 function dropSeed()
     lp("drop seed")
-    collectSet(false, 2)
-    sleep(100)
+    if bot.auto_collect == true then
+        collectSet(false, 2)
+    end
+    sleep(1000)
     warp(WORLD_STORAGE[1],WORLD_STORAGE[2])
     if bot:isInWorld(WORLD_STORAGE[1]) and wd() == false and bot:getInventory():findItem(SEED_ID) > 0 then
         SEEDER = gscan(SEED_ID)
@@ -320,8 +321,10 @@ end
 
 function dropFlour()
     lp("drop flour")
-    collectSet(false, 2)
-    sleep(100)
+    if bot.auto_collect == true then
+        collectSet(false, 2)
+    end
+    sleep(1000)
     warp(WORLD_STORAGE[1],WORLD_STORAGE[2])
     if bot:isInWorld(WORLD_STORAGE[1]) and wd() == false and bot:getInventory():findItem(4562) > 0 then
         Flour = gscan(4562)
@@ -357,8 +360,10 @@ end
 
 function dropPack()
     lp("drop pack")
-    collectSet(false, 2)
-    sleep(100)
+    if bot.auto_collect == true then
+        collectSet(false, 2)
+    end
+    sleep(1000)
     warp(WORLD_PACK[1],WORLD_PACK[2])
     if bot:isInWorld(WORLD_PACK[1]) then
         sleep(500)
@@ -394,8 +399,9 @@ function takePickaxe()
     while not bot:isInWorld(WORLD_PICKAXE[1]) do
         takePickaxe()
     end
-    collectSet(true, 2)
-    sleep(1000)
+    if bot.auto_collect == false then
+        collectSet(true, 2)
+    end
     if bot:getInventory():findItem(98) > 1 then
         bot:wear(98)
     elseif bot:getInventory():findItem(98) == 0 then
@@ -405,8 +411,10 @@ function takePickaxe()
         bot:wear(98)
         sleep(1000)
     end
-    collectSet(false, 2)
-    sleep(100)
+    if bot.auto_collect == true then
+        collectSet(false, 2)
+    end
+    sleep(2000)
     while bot:getInventory():findItem(98) > 1 do
         bot:drop(98, bot:getInventory():findItem(98) - 1)
         sleep(1000)
@@ -416,8 +424,9 @@ end
 function harvest()
     lp("harvesting")
     sleep(100)
-    collectSet(true, 2)
-    sleep(100)
+    if bot.auto_collect == false then
+        collectSet(true, 2)
+    end
     for i, tile in ipairs(getTiles()) do
         if tile.y == bot.y and bot.status == 1 and tile.fg == SEED_ID and tile:canHarvest() and bot:getInventory():findItem(BLOCK_ID) <= 180 then
             bot:findPath(tile.x, tile.y)
@@ -447,8 +456,6 @@ end
 function grinder()
     if bot.status == 1 and bot:getInventory():findItem(SEED_ID) > 0 and bot:getInventory():findItem(BLOCK_ID) >= 150 and wd() == false then
         lp("grinding")
-        collectSet(false, 2)
-        sleep(100)
         for _, tile in pairs(getTiles()) do
             if tile.fg == 4582 then
                 bot:findPath(tile.x,tile.y+1)
@@ -491,9 +498,15 @@ function starting()
     start = false
     if FACTORY_MODE == "FLOUR" then
         pabrik = true
+        pabrik1 = false
+        pabrik2 = false
     elseif FACTORY_MODE == "SEED" then
+        pabrik = false
         pabrik1 = true
+        pabrik2 = false
     elseif FACTORY_MODE == "BLOCK" then
+        pabrik = false
+        pabrik1 = false
         pabrik2 = true
     end
 end
@@ -539,8 +552,9 @@ while true do
         end
         bot.ignore_gems = false
         lp("pnb")
-        collectSet(true, 2)
-        sleep(100)
+        if bot.auto_collect == false then
+            collectSet(true, 2)
+        end
         while bot.status == 1 and wd() == false and bot:getInventory():findItem(BLOCK_ID) > 0 do
             if bot.status == 1 and bot:getWorld():getTile(bot.x-1,bot.y).fg == 0 or bot:getWorld():getTile(bot.x-1,bot.y).bg == 0 then
                 place(-1,0,BLOCK_ID)
@@ -551,8 +565,6 @@ while true do
                 end
             end
         end
-        collectSet(false, 2)
-        sleep(100)
         trasher()
         sleep(1000)
         if IGNORE_GEMS then
@@ -577,8 +589,9 @@ while true do
         end
         bot.ignore_gems = false
         lp("pnb")
-        collectSet(true, 2)
-        sleep(100)
+        if bot.auto_collect == false then
+            collectSet(true, 2)
+        end
         while bot.status == 1 and wd() == false and bot:getInventory():findItem(BLOCK_ID) > 0 do
             if bot.status == 1 and bot:getWorld():getTile(bot.x-1,bot.y).fg == 0 or bot:getWorld():getTile(bot.x-1,bot.y).bg == 0 then
                 place(-1,0,BLOCK_ID)
@@ -589,8 +602,6 @@ while true do
                 end
             end
         end
-        collectSet(false, 2)
-        sleep(100)
         trasher()
         sleep(1000)
         if IGNORE_GEMS then
