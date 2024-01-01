@@ -52,19 +52,13 @@ function lp(txt)
 end
 
 function collectSet(they, want)
-    if they then
-        lp("set collect to true")
-        bot.auto_collect = they
-        bot.collect_range = want
-    else
-        lp("set collect to false")
-        bot.auto_collect = they
-        bot.collect_range = want
-    end
+    lp("change set collect")
+    bot.auto_collect = they
+    bot.collect_range = want
 end
 
 function wd()
-    if bot:getWorld():getTile(bot.x, bot.y).fg == 6 then
+    if bot:getWorld():getTile(math.floor(getLocal().posx/32), math.floor(getLocal().posy/32)).fg == 6 then
       return true
     end
     return false
@@ -105,7 +99,7 @@ function ck()
     if bot.status == 1 and wd() then
         warp(WORLD_PABRIK[1],WORLD_PABRIK[2])
         sleep(500)
-        if bot.status == 1 and wd() == false and bot:getWorld():getTile(bot.x,bot.y).fg ~= PATOKAN or bot.status == 1 and wd() == false and bot:getWorld():getTile(bot.x,bot.y).bg ~= PATOKAN then
+        if bot.status == 1 and wd() == false and bot:getWorld():getTile(math.floor(getLocal().posx/32),math.floor(getLocal().posy/32)).fg ~= PATOKAN or bot.status == 1 and wd() == false and bot:getWorld():getTile(math.floor(getLocal().posx/32),math.floor(getLocal().posy/32)).bg ~= PATOKAN then
             baris()
         end
     end
@@ -137,7 +131,7 @@ end
 
 function punch(a,b)
     if bot.status == 1 then
-    bot:hit(bot.x+a,bot.y+b)
+    bot:hit(math.floor(getLocal().posx/32)+a,math.floor(getLocal().posy/32)+b)
     end
     if wd() then
         ck()
@@ -146,7 +140,7 @@ end
 
 function place(a,b,id)
     if bot.status == 1 then
-    bot:place(bot.x+a,bot.y+b,id)
+    bot:place(math.floor(getLocal().posx/32)+a,math.floor(getLocal().posy/32)+b,id)
     end
     if wd() then
         ck()
@@ -166,7 +160,7 @@ end
 function CheckEmptyTile()
     m=0
         for _,tile in pairs(getTiles()) do
-            if tile.y == bot.y and bot:getWorld():getTile(tile.x,tile.y).fg == 0 and bot:getWorld():getTile(tile.x,tile.y+1).fg ~= 0 then
+            if tile.y == math.floor(getLocal().posy/32) and bot:getWorld():getTile(tile.x,tile.y).fg == 0 and bot:getWorld():getTile(tile.x,tile.y+1).fg ~= 0 then
                 m = m + 1
             end
         end
@@ -271,11 +265,14 @@ trashList = {882,1406,9346,5040,5042,5044,5032,5034,5036,5038,5024,5026,5028,716
 function trasher()
     lp("trashing item")
     for i, trashs in ipairs(trashList) do
-        if bot:getInventory():findItem(trashs) > 1 then
-          bot:trash(trashs)
-          sleep(1000)
-          bot:trash(trashs,bot:getInventory():findItem(trashs))
-          sleep(1000)
+        if bot:getInventory():findItem(trashs) > 1 and wd() == false then
+            if wd() then
+                warp(WORLD_PABRIK[1],WORLD_PABRIK[2])
+            end
+            bot:trash(trashs)
+            sleep(1000)
+            bot:trash(trashs,bot:getInventory():findItem(trashs))
+            sleep(1000)
         end
     end
 end
@@ -290,8 +287,8 @@ function dropSeed()
     if bot:isInWorld(WORLD_STORAGE[1]) and wd() == false and bot:getInventory():findItem(SEED_ID) > 0 then
         SEEDER = gscan(SEED_ID)
         sleep(500)
-        lastX = bot.x + math.ceil(SEEDER/4000)
-        lastY = bot.y
+        lastX = math.floor(getLocal().posx/32) + math.ceil(SEEDER/4000)
+        lastY = math.floor(getLocal().posy/32)
         sleep(500)
         if SEEDER == 0 then
             bot:moveRight()
@@ -329,8 +326,8 @@ function dropFlour()
     if bot:isInWorld(WORLD_STORAGE[1]) and wd() == false and bot:getInventory():findItem(4562) > 0 then
         Flour = gscan(4562)
         sleep(500)
-        lastX = bot.x + math.ceil(Flour/4000)
-        lastY = bot.y
+        lastX = math.floor(getLocal().posx/32) + math.ceil(Flour/4000)
+        lastY = math.floor(getLocal().posy/32)
         sleep(500)
         if Flour == 0 then
             bot:moveRight()
@@ -380,12 +377,12 @@ function dropPack()
                 if wd() then
                     warp(WORLD_PACK[1],WORLD_PACK[2])
                 end
-                bot:findPath(bot.x, bot.y - math.ceil(gscan(ID_PACK[i])/4000))
+                bot:findPath(math.floor(getLocal().posx/32), math.floor(getLocal().posy/32) - math.ceil(gscan(ID_PACK[i])/4000))
                 sleep(500)
                 bot:drop(ID_PACK[i], bot:getInventory():findItem(ID_PACK[i]))
                 sleep(500)
             end
-            bot:findPath(bot.x, bot.y + math.ceil(gscan(ID_PACK[i])/4000))
+            bot:findPath(math.floor(getLocal().posx/32), math.floor(getLocal().posy/32) + math.ceil(gscan(ID_PACK[i])/4000))
             sleep(1000)
             bot:moveRight()
         end
@@ -428,7 +425,7 @@ function harvest()
         collectSet(true, 2)
     end
     for i, tile in ipairs(getTiles()) do
-        if tile.y == bot.y and bot.status == 1 and tile.fg == SEED_ID and tile:canHarvest() and bot:getInventory():findItem(BLOCK_ID) <= 180 then
+        if tile.y == math.floor(getLocal().posy/32) and bot.status == 1 and tile.fg == SEED_ID and tile:canHarvest() and bot:getInventory():findItem(BLOCK_ID) <= 180 then
             bot:findPath(tile.x, tile.y)
             sleep(DELAY_HARVEST)
             punch(0, 0)
@@ -445,7 +442,7 @@ function plant()
     lp("planting")
     sleep(100)
     for i, tile in ipairs(getTiles()) do
-        if tile.y == bot.y and bot.status == 1 and tile.fg == 0 and bot:getWorld():getTile(tile.x, tile.y + 1).fg ~= 0 and bot:getWorld():getTile(tile.x, tile.y + 1).fg ~= SEED_ID and bot:getInventory():findItem(SEED_ID) > 0 then
+        if tile.y == math.floor(getLocal().posy/32) and bot.status == 1 and tile.fg == 0 and bot:getWorld():getTile(tile.x, tile.y + 1).fg ~= 0 and bot:getWorld():getTile(tile.x, tile.y + 1).fg ~= SEED_ID and bot:getInventory():findItem(SEED_ID) > 0 then
             bot:findPath(tile.x, tile.y)
             place(0,0,SEED_ID)
             sleep(DELAY_PLANT)
@@ -472,7 +469,7 @@ function grinder()
         sleep(1000)
         warp(WORLD_PABRIK[1],WORLD_PABRIK[2])
         sleep(1000)
-        if bot.status == 1 and wd() == false and bot:getWorld():getTile(bot.x,bot.y).fg ~= PATOKAN or bot.status == 1 and wd() == false and bot:getWorld():getTile(bot.x,bot.y).bg ~= PATOKAN then
+        if bot.status == 1 and wd() == false and bot:getWorld():getTile(math.floor(getLocal().posx/32),math.floor(getLocal().posy/32)).fg ~= PATOKAN or bot.status == 1 and wd() == false and bot:getWorld():getTile(math.floor(getLocal().posx/32),math.floor(getLocal().posy/32)).bg ~= PATOKAN then
             baris()
         end
         sleep(1000)
@@ -492,7 +489,7 @@ function starting()
         warp(WORLD_PABRIK[1],WORLD_PABRIK[2])
         sleep(1000)
     end
-    if bot.status == 1 and wd() == false and bot:getWorld():getTile(bot.x,bot.y).fg ~= PATOKAN or bot.status == 1 and wd() == false and bot:getWorld():getTile(bot.x,bot.y).bg ~= PATOKAN then
+    if bot.status == 1 and wd() == false and bot:getWorld():getTile(math.floor(getLocal().posx/32),math.floor(getLocal().posy/32)).fg ~= PATOKAN or bot.status == 1 and wd() == false and bot:getWorld():getTile(math.floor(getLocal().posx/32),math.floor(getLocal().posy/32)).bg ~= PATOKAN then
         baris()
     end
     start = false
@@ -546,7 +543,7 @@ while true do
             end
         end
         sleep(1000)
-        if bot.status == 1 and wd() == false and bot:getWorld():getTile(bot.x,bot.y).fg ~= PATOKAN or bot.status == 1 and wd() == false and bot:getWorld():getTile(bot.x,bot.y).bg ~= PATOKAN then
+        if bot.status == 1 and wd() == false and bot:getWorld():getTile(math.floor(getLocal().posx/32),math.floor(getLocal().posy/32)).fg ~= PATOKAN or bot.status == 1 and wd() == false and bot:getWorld():getTile(math.floor(getLocal().posx/32),math.floor(getLocal().posy/32)).bg ~= PATOKAN then
             baris()
             sleep(1000)
         end
@@ -556,10 +553,10 @@ while true do
             collectSet(true, 2)
         end
         while bot.status == 1 and wd() == false and bot:getInventory():findItem(BLOCK_ID) > 0 do
-            if bot.status == 1 and bot:getWorld():getTile(bot.x-1,bot.y).fg == 0 or bot:getWorld():getTile(bot.x-1,bot.y).bg == 0 then
+            if bot.status == 1 and bot:getWorld():getTile(math.floor(getLocal().posx/32)-1,math.floor(getLocal().posy/32)).fg == 0 or bot:getWorld():getTile(math.floor(getLocal().posx/32)-1,math.floor(getLocal().posy/32)).bg == 0 then
                 place(-1,0,BLOCK_ID)
                 sleep(DELAY_PLACE)
-                while bot.status == 1 and bot:getWorld():getTile(bot.x-1,bot.y).fg > 0 or bot:getWorld():getTile(bot.x-1,bot.y).bg > 0 and wd() == false do
+                while bot.status == 1 and bot:getWorld():getTile(math.floor(getLocal().posx/32)-1,math.floor(getLocal().posy/32)).fg > 0 or bot:getWorld():getTile(math.floor(getLocal().posx/32)-1,math.floor(getLocal().posy/32)).bg > 0 and wd() == false do
                     punch(-1, 0)
                     sleep(DELAY_BREAK)
                 end
@@ -583,7 +580,7 @@ while true do
             plant()
             sleep(1000)
         end
-        if bot.status == 1 and wd() == false and bot:getWorld():getTile(bot.x,bot.y).fg ~= PATOKAN or bot.status == 1 and wd() == false and bot:getWorld():getTile(bot.x,bot.y).bg ~= PATOKAN then
+        if bot.status == 1 and wd() == false and bot:getWorld():getTile(math.floor(getLocal().posx/32),math.floor(getLocal().posy/32)).fg ~= PATOKAN or bot.status == 1 and wd() == false and bot:getWorld():getTile(math.floor(getLocal().posx/32),math.floor(getLocal().posy/32)).bg ~= PATOKAN then
             baris()
             sleep(1000)
         end
@@ -593,10 +590,10 @@ while true do
             collectSet(true, 2)
         end
         while bot.status == 1 and wd() == false and bot:getInventory():findItem(BLOCK_ID) > 0 do
-            if bot.status == 1 and bot:getWorld():getTile(bot.x-1,bot.y).fg == 0 or bot:getWorld():getTile(bot.x-1,bot.y).bg == 0 then
+            if bot.status == 1 and bot:getWorld():getTile(math.floor(getLocal().posx/32)-1,math.floor(getLocal().posy/32)).fg == 0 or bot:getWorld():getTile(math.floor(getLocal().posx/32)-1,math.floor(getLocal().posy/32)).bg == 0 then
                 place(-1,0,BLOCK_ID)
                 sleep(DELAY_PLACE)
-                while bot.status == 1 and bot:getWorld():getTile(bot.x-1,bot.y).fg > 0 or bot:getWorld():getTile(bot.x-1,bot.y).bg > 0 and wd() == false do
+                while bot.status == 1 and bot:getWorld():getTile(math.floor(getLocal().posx/32)-1,math.floor(getLocal().posy/32)).fg > 0 or bot:getWorld():getTile(math.floor(getLocal().posx/32)-1,math.floor(getLocal().posy/32)).bg > 0 and wd() == false do
                     punch(-1, 0)
                     sleep(DELAY_BREAK)
                 end
@@ -615,7 +612,7 @@ while true do
             sleep(1000)
             warp(WORLD_PABRIK[1],WORLD_PABRIK[2])
             sleep(1000)
-            if bot.status == 1 and wd() == false and bot:getWorld():getTile(bot.x,bot.y).fg ~= PATOKAN or bot.status == 1 and wd() == false and bot:getWorld():getTile(bot.x,bot.y).bg ~= PATOKAN then
+            if bot.status == 1 and wd() == false and bot:getWorld():getTile(math.floor(getLocal().posx/32),math.floor(getLocal().posy/32)).fg ~= PATOKAN or bot.status == 1 and wd() == false and bot:getWorld():getTile(math.floor(getLocal().posx/32),math.floor(getLocal().posy/32)).bg ~= PATOKAN then
                 baris()
                 sleep(1000)
             end
