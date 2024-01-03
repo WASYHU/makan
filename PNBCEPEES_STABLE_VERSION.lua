@@ -232,9 +232,7 @@ AddHook("onvariant", "Main Hook", hook)
 
 function posbreak()
     nill()
-    if tostring(math.floor(GetLocal().pos.x/32)) ~= PositionBreak[1] and tostring(math.floor(GetLocal().pos.y/32)) ~= PositionBreak[2] then
-        findPath(PositionBreak[1],PositionBreak[2])
-    end
+    findPath(PositionBreak[1],PositionBreak[2])
 end
 
 function takeRemote()
