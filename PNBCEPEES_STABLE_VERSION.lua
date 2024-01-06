@@ -115,7 +115,7 @@ local DATA = [[
         if EditedMessages then
             MakeRequest(WEBHOOK_URL, "PATCH",{["Content-Type"] = "application/json"}, DATA)
         else
-            MakeRequest(WEBHOOK_URL, "POST",{["Content-Type"] = "application/json"}, DATA)
+            MakeRequest(LinkWebhooks, "POST",{["Content-Type"] = "application/json"}, DATA)
         end
 end
 
