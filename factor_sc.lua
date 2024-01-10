@@ -287,9 +287,9 @@ function baris()
         end
     end
     i = 0
-    for _, bots in ipairs(getBots()) do
+    for _, player in ipairs(bot:getWorld():getPlayers()) do
         local nami = bot.name
-        if bots.name:upper() == nami:upper() then
+        if ignoreUnder(player.name:upper()) == nami:upper() and player.name:upper() ~= WHITELIST_OWNER then
                 bot:findPath(xPatokan[i],yPatokan[i])
                 sleep(500)
                 break
@@ -307,9 +307,9 @@ function baris1()
         if tile.fg == PATOKAN_WORLD_BREAK or tile.bg == PATOKAN_WORLD_BREAK then 
             posaX = tile.x+1
             posaY = tile.y
-            for _, bots in ipairs(getBots()) do
+            for _, bots in ipairs(bot:getWorld():getPlayers()) do
             local nami = bot.name
-                if nami:upper() == bots.name:upper() then
+                if ignoreUnder(player.name:upper()) == nami:upper() and player.name:upper() ~= WHITELIST_OWNER then
                     posBreakX = posaX+a
                     posBreakY = posaY
                     bot:findPath(posBreakX,posBreakY)
