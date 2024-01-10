@@ -307,7 +307,7 @@ function baris1()
         if tile.fg == PATOKAN_WORLD_BREAK or tile.bg == PATOKAN_WORLD_BREAK then 
             posaX = tile.x+1
             posaY = tile.y
-            for _, bots in ipairs(bot:getWorld():getPlayers()) do
+            for _, palyer in ipairs(bot:getWorld():getPlayers()) do
             local nami = bot.name
                 if ignoreUnder(player.name:upper()) == nami:upper() and player.name:upper() ~= WHITELIST_OWNER then
                     posBreakX = posaX+a
