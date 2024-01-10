@@ -1053,7 +1053,7 @@ while true do
         sleep(1000)
         if UPGRADE_BP then
             if bot.gem_count >= 500 then
-                while inv.slotcount <= TARGET_BP do
+                while bot:getInventory().slotcount <= TARGET_BP do
                     bot:buy("upgrade_backpack")
                     sleep(1500)
                 end
@@ -1120,7 +1120,7 @@ while true do
             end
             if UPGRADE_BP then
                 if bot.gem_count >= 500 then
-                    while inv.slotcount <= TARGET_BP do
+                    while bot:getInventory().slotcount <= TARGET_BP do
                         bot:buy("upgrade_backpack")
                         sleep(1500)
                     end
