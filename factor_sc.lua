@@ -820,7 +820,7 @@ function PNB()
     bot.ignore_gems = false
     lp("pnb")
     if bot.auto_collect == false then
-        collectSet(true, 3)
+        collectSet(true, 4)
     end
     if BREAK_OTHER_WORLD then
         if ON_TUTORIAL then
