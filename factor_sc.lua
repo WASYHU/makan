@@ -305,7 +305,7 @@ end
 function patokanPabrik()
     ck()
     lp("baris")
-    if bot.x ~= untukPatokanX and bot.y ~= untukPatokanY and whitedoor() == false and bot.status == 1 then
+    if whitedoor() == false and bot.status == 1 then
         bot:findPath(untukPatokanX,untukPatokanY)
         sleep(500)
     end
