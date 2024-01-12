@@ -280,7 +280,7 @@ function baris()
     lp("baris awal")
     ct = 0
     for _, tile in pairs(getTiles()) do
-        if tile.fg == 20 or tile.bg == 20 then
+        if tile.fg == PATOKAN or tile.bg == PATOKAN then
             xPatokan[ct] = tile.x
             yPatokan[ct] = tile.y
             ct = ct + 1
