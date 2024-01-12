@@ -259,7 +259,7 @@ function ck()
         warp(WORLD_PABRIK[1],WORLD_PABRIK[2])
         sleep(500)
         if bot.status == 1 and whitedoor() == false and bot:getWorld():getTile(bot.x,bot,y).fg ~= PATOKAN or bot.status == 1 and whitedoor() == false and bot:getWorld():getTile(bot.x,bot.y).bg ~= PATOKAN then
-            baris()
+            patokanPabrik()
         end
     end
 end
@@ -277,25 +277,37 @@ end
 
 function baris()
     ck()
-    lp("baris")
+    lp("baris awal")
     ct = 0
     for _, tile in pairs(getTiles()) do
-        if tile.fg == PATOKAN or tile.bg == PATOKAN then
+        if tile.fg == 20 or tile.bg == 20 then
             xPatokan[ct] = tile.x
             yPatokan[ct] = tile.y
             ct = ct + 1
         end
     end
     i = 0
-    for _, bots in ipairs(getBots()) do
-        local nami = bot.name
-        if bots.name:upper() == nami:upper() then
+    for _, player in pairs(bot:getWorld():getPlayers()) do
+        if player.userid == getLocal().userid and whitedoor() == false then
                 bot:findPath(xPatokan[i],yPatokan[i])
                 sleep(500)
+                untukPatokanX = bot.x
+                untukPatokanY = bot.y
                 break
+        elseif player.name:upper() == WHITELIST_OWNER:upper() then
+                lp("baris ada owner")
         else
             i = i + 1
         end
+    end
+end
+
+function patokanPabrik()
+    ck()
+    lp("baris")
+    if bot.x ~= untukPatokanX and bot.y ~= untukPatokanY and whitedoor() == false and bot.status == 1 then
+        bot:findPath(untukPatokanX,untukPatokanY)
+        sleep(500)
     end
 end
 
@@ -307,9 +319,8 @@ function baris1()
         if tile.fg == PATOKAN_WORLD_BREAK or tile.bg == PATOKAN_WORLD_BREAK then 
             posaX = tile.x+1
             posaY = tile.y
-            for _, bots in ipairs(getBots()) do
-            local nami = bot.name
-                if nami:upper() == bots.name:upper() then
+            for _, player in ipairs(bot:getWorld():getPlayers()) do
+                if player.name:upper() == bot.name:upper() then
                     posBreakX = posaX+a
                     posBreakY = posaY
                     bot:findPath(posBreakX,posBreakY)
@@ -403,6 +414,40 @@ function CheckEmptyTile()
             end
         return m
     end
+end
+
+function takeSeed()
+    lp("Take Seed")
+    sleep(1000)
+    while bot:getWorld().name ~= WORLD_STORAGE[1] do
+        warp(WORLD_STORAGE[1],WORLD_STORAGE[2])
+        sleep(4000)
+    end
+    for _,sid in pairs(bot:getWorld():getObjects()) do
+        if sid.id == SEED_ID then
+            xw = math.floor(sid.x / 32)
+            yw = math.floor(sid.y / 32)
+            bot:findPath(xw,yw)
+            sleep(500)
+            bot:collectObject(sid.oid,2)
+            sleep(500)
+            if bot:getInventory():findItem(SEED_ID) >= 1 then
+                break
+            end
+        end
+    end
+    sleep(1000)
+    while bot:getWorld().name ~= WORLD_PABRIK[1] do
+        warp(WORLD_PABRIK[1],WORLD_PABRIK[2])
+        sleep(4000)
+    end
+end
+
+function tileKosongMas()
+    if CheckEmptyTile() > 50 then
+        return true
+    end
+    return false
 end
 
 function statusBotDescription(status)
@@ -810,7 +855,7 @@ function grinder()
         warp(WORLD_PABRIK[1],WORLD_PABRIK[2])
         sleep(1000)
         if bot.status == 1 and whitedoor() == false and bot:getWorld():getTile(bot.x,bot,y).fg ~= PATOKAN or bot.status == 1 and whitedoor() == false and bot:getWorld():getTile(bot.x,bot.y).bg ~= PATOKAN then
-            baris()
+            patokanPabrik()
         end
         sleep(1000)
     end
@@ -907,7 +952,7 @@ function PNB()
         end
         if bot:getWorld().name == WORLD_PABRIK[1] then
             if bot.status == 1 and whitedoor() == false and bot:getWorld():getTile(bot.x,bot,y).fg ~= PATOKAN or bot.status == 1 and whitedoor() == false and bot:getWorld():getTile(bot.x,bot.y).bg ~= PATOKAN then
-                baris()
+                patokanPabrik()
             end
         end
     else
@@ -933,7 +978,6 @@ end
 
 function starting()
     bot:getLog():clear()
-    sleep((INDEX_SLOT - 1) * DELAY_RUN_SC)
     if TAKE_PICKAXE and bot:getInventory():findItem(98) < 1 then
         sleep((INDEX_SLOT - 1) * 3000)
         takePickaxe()
@@ -944,8 +988,15 @@ function starting()
         warp(WORLD_PABRIK[1],WORLD_PABRIK[2])
         sleep(1000)
     end
+    sleep((INDEX_SLOT - 1) * DELAY_RUN_SC)
     if bot.status == 1 and whitedoor() == false and bot:getWorld():getTile(bot.x,bot,y).fg ~= PATOKAN or bot.status == 1 and whitedoor() == false and bot:getWorld():getTile(bot.x,bot.y).bg ~= PATOKAN then
         baris()
+    end
+    if tileKosongMas() and bot:getInventory():findItem(SEED_ID) < 20 then
+        takeSeed()
+    end
+    if bot.status == 1 and whitedoor() == false and bot:getWorld():getTile(bot.x,bot,y).fg ~= PATOKAN or bot.status == 1 and whitedoor() == false and bot:getWorld():getTile(bot.x,bot.y).bg ~= PATOKAN then
+        patokanPabrik()
     end
     start = false
     if FACTORY_MODE == "FLOUR" then
@@ -1068,7 +1119,7 @@ while true do
         end
         sleep(1000)
         if bot.status == 1 and whitedoor() == false and bot:getWorld():getTile(bot.x,bot,y).fg ~= PATOKAN or bot.status == 1 and whitedoor() == false and bot:getWorld():getTile(bot.x,bot.y).bg ~= PATOKAN then
-            baris()
+            patokanPabrik()
         end
         if bot:getInventory():findItem(BLOCK_ID) > 0 and bot:getWorld().name ~= "EXIT" then
             PNB()
@@ -1097,7 +1148,7 @@ while true do
             sleep(1000)
         end
         if bot.status == 1 and whitedoor() == false and bot:getWorld():getTile(bot.x,bot,y).fg ~= PATOKAN or bot.status == 1 and whitedoor() == false and bot:getWorld():getTile(bot.x,bot.y).bg ~= PATOKAN then
-            baris()
+            patokanPabrik()
         end
         if bot:getInventory():findItem(BLOCK_ID) > 0 and bot:getWorld().name ~= "EXIT" then
             PNB()
@@ -1116,22 +1167,22 @@ while true do
             warp(WORLD_PABRIK[1],WORLD_PABRIK[2])
             sleep(1000)
             if bot.status == 1 and whitedoor() == false and bot:getWorld():getTile(bot.x,bot,y).fg ~= PATOKAN or bot.status == 1 and whitedoor() == false and bot:getWorld():getTile(bot.x,bot.y).bg ~= PATOKAN then
-                baris()
+                patokanPabrik()
             end
-            if UPGRADE_BP then
-                if bot.gem_count >= 500 then
-                    while bot:getInventory().slotcount <= TARGET_BP do
-                        bot:buy("upgrade_backpack")
-                        sleep(1500)
-                    end
+        end
+        if UPGRADE_BP then
+            if bot.gem_count >= 500 then
+                while bot:getInventory().slotcount <= TARGET_BP do
+                    bot:buy("upgrade_backpack")
+                    sleep(1500)
                 end
             end
-            if BUY_PACK then
-                if bot.gem_count >= TARGET_GEMS then
-                    dropPack()
-                    sleep(1000)
-                    warp(WORLD_PABRIK[1],WORLD_PABRIK[2])
-                end
+        end
+        if BUY_PACK then
+            if bot.gem_count >= TARGET_GEMS then
+                dropPack()
+                sleep(1000)
+                warp(WORLD_PABRIK[1],WORLD_PABRIK[2])
             end
         end
     end
