@@ -320,12 +320,14 @@ function baris1()
             posaX = tile.x+1
             posaY = tile.y
             for _, player in ipairs(bot:getWorld():getPlayers()) do
-                if player.name:upper() == bot.name:upper() then
+                if player.userid == getLocal().userid and whitedoor() == false then
                     posBreakX = posaX+a
                     posBreakY = posaY
                     bot:findPath(posBreakX,posBreakY)
                     sleep(200)
                     break
+                elseif player.name:upper() == WHITELIST_OWNER:upper() then
+                    lp("baris ada owner")
                 else
                     a = a + 1
                 end
