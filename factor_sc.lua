@@ -990,10 +990,10 @@ function starting()
         warp(WORLD_PABRIK[1],WORLD_PABRIK[2])
         sleep(1000)
     end
-    sleep((INDEX_SLOT - 1) * DELAY_RUN_SC)
     if bot.status == 1 and whitedoor() == false and bot:getWorld():getTile(bot.x,bot,y).fg ~= PATOKAN or bot.status == 1 and whitedoor() == false and bot:getWorld():getTile(bot.x,bot.y).bg ~= PATOKAN then
         baris()
     end
+    sleep((INDEX_SLOT - 1) * DELAY_RUN_SC)
     if tileKosongMas() and bot:getInventory():findItem(SEED_ID) < 20 then
         takeSeed()
     end
