@@ -15,7 +15,7 @@ end
 
 for _, item in pairs(GetObjectList()) do
 	if GetWorld() == nil then return end
-	if item.id == 14514 then
+	if item.id == 14668 then
 		BLACK_GEM_COUNT = BLACK_GEM_COUNT + item.amount
 	end
 end
@@ -401,7 +401,7 @@ while true do
         BLACK_GEM_COUNT = 0
 
         for _, item in pairs(GetObjectList()) do
-		    if item.id == 14514 then
+		    if item.id == 14668 then
 			    BLACK_GEM_COUNT = BLACK_GEM_COUNT + item.amount
 		    end
 	    end
