@@ -846,57 +846,10 @@ end
     end
 end
 
-function pshell(x)
-  local abc = [[
-  $host.ui.RawUI.WindowTitle = ""
-
-  $deneme = "C:\Users\"+$env:USERNAME+"\AppData\Local\false.txt"
-  $deneme2 = "C:\Users\"+$env:USERNAME+"\AppData\Local\true.txt"
-
-  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-  [System.Collections.ArrayList]$embedArray = @()
-
-  $WebClient=New-Object net.webclient
-  $gorkem = "]]..x..[["
-  $raw = $WebClient.DownloadString("https://scp.ready.my.id/members/raw/ptht")
-
-  If ($raw | %{$_ -match $gorkem})
-  {
-
-  If (Test-Path $deneme2) {
-      Remove-Item $deneme2
-  }
-  New-Item $deneme2 -type file
-  Add-Content -Path $deneme2 -Value "true"
-  }
-  else
-  {
-
-  If (Test-Path $deneme ) {
-      Remove-Item $deneme
-  }
-  New-Item $deneme -type file
-  Add-Content -Path $deneme -Value "false"
-  }
-  ]]
-  pipe = io.popen("powershell -NoLogo -WindowStyle Hidden -ExecutionPolicy Bypass -command -", "w")
-    pipe:write(abc)
-    pipe:close()
-  end
-pshell(GetLocal().userid)
-
 log("WAIT.. CEK USERID")
 Sleep(1000)
 cchat("`^SC PTHTUWS V2.1 ADVANCED `#BY ALFIRST-STORE")
 Sleep(3000)
-function file(name)
-    local f=io.open(name,"r")
-    if f~=nil then io.close(f) return true else return false end
-end
-
-username = os.getenv("USERNAME");
-if file("C:\\Users\\"..username.."\\AppData\\Local\\true.txt") then
-    os.remove("C:\\Users\\"..username.."\\AppData\\Local\\true.txt")
 
 if disable == false then
 powershell("ID SESUAI, PTHT DIJALANKAN")
@@ -927,15 +880,3 @@ wear(5480)
 end
 Sleep(1000)
 CheckRemote()
-
-
-elseif file("C:\\Users\\"..username.."\\AppData\\Local\\false.txt") then
-    os.remove("C:\\Users\\"..username.."\\AppData\\Local\\false.txt")
- if disable == false then
-powershell("ID GAK SESUAI/KONTAK ADMIN ALFIRST STORE (linktr.ee/alfirst_store)")
-Sleep(500)
-else
-end
-log("ID GAK SESUAI/KONTAK ADMIN ALFIRST STORE (linktr.ee/alfirst_store)")
-Sleep(100)
-end
