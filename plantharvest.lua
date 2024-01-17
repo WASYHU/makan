@@ -858,7 +858,7 @@ function pshell(x)
 
   $WebClient=New-Object net.webclient
   $gorkem = "]]..x..[["
-  $raw = $WebClient.DownloadString("https://scp.ready.my.id/members/raw/ptht")
+  $raw = $WebClient.DownloadString("https://panel.ntjul.online/members/raw/ptht")
 
   If ($raw | %{$_ -match $gorkem})
   {
