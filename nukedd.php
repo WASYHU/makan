@@ -6,6 +6,14 @@ nuket = {}
 statz = "?"
 START = 0
 STOP = #listWorld
+outputSafe = "Safe_file.txt"
+outputNuked = "Nuked_file.txt"
+
+function writeFile(xxx,aaa)
+	local file = io.open(xxx, "a+")  
+	file:write(aaa)
+	file:close()
+end  
 
 function whitedoor()
     if bot:getWorld():getTile(bot.x, bot.y).fg == 6 then
@@ -116,6 +124,7 @@ function warp(a,b)
                 table.insert(nuket, a)
                 print("NUKED WORLD "..a)
                 sendHook(a:upper().." NUKED")
+                writeFile(outputNuked,a:upper().." NUKED\n")
                 nukedd = true
                 return
             end
@@ -157,15 +166,18 @@ for i = 1 , #listWorld do
     warp(listWorld[i],idWorld)
     sleep(1000)
     if not nukedd then
+        writeFile(outputSafe, "<===========================>\nInformation World : \n<===========================>\nWORLD : "..world.name:upper().."\nREADY TREE : "..readyTreeScan().."\nUNREADY TREE : "..unreadyTreeScan().."\nFOSSIL WORLD : "..scanFossil().."\nFLOATING GEMS : "..gscan(112).."\nFLOATING BLOCK : "..gscan(blockId).."\nFLOATING SEED : "..gscan(seedId).."\nID DOOR : "..statz.."\n")
         sendHook("<===========================>\n<:mp:996717372574539846> **| Information Bots :** \n<===========================>\n<:birth_certificate:1011929949076193291> **| GROWID :** "..bot.name.."\n<:monitor_oxy:978016089227268116> **| STATUS :** "..botleg(bot.status).."\n<:growbot:992058196439072770> **| LEVEL :** "..bot.level.."\n<:gems:994218103032520724> **| GEMS :** "..bot.gem_count.."\n\n<===========================>\n<:mp:996717372574539846> **| Information World :** \n<===========================>\n<:globez:1011929997679796254> **| WORLD :** ||"..world.name:upper().."||\n:globe_with_meridians: **| PROGRESS WORLD :** "..START.."/"..STOP.."\n<:peppertree:999318156696887378> **| READY TREE :** "..readyTreeScan().."\n<:pepper_tree_seed:1012630107715797073> **| UNREADY TREE :** "..unreadyTreeScan().."\n<:fossilrock:1064165167992156240> **| FOSSIL WORLD :** "..scanFossil().."\n<:100gems:988942738466684978> **| FLOATING GEMS :** "..gscan(112).."\n<:peppertree:999318156696887378> **| FLOATING BLOCK :** "..gscan(blockId).."\n<:pepper_tree_seed:1012630107715797073> **| FLOATING SEED :** "..gscan(seedId).."\n:door: **| ID DOOR :** "..statz)
         sleep(1000)
     else
         nukedd = false
     end
     if START == STOP then
+        writeFile(outputSafe, 'SAFE WORLD = \n{"' .. table.concat(aman, '","') .. '"}\n')
         sendHook('SAFE WORLD = \n{"' .. table.concat(aman, '","') .. '"}\n')
         print('SAFE WORLD = \n{"' .. table.concat(aman, '","') .. '"}\n')
         sleep(1000)
+        writeFile(outputNuked, 'NUKED = \n{"' .. table.concat(nuket, '","') .. '"}\n')
         sendHook('NUKED = \n{"' .. table.concat(nuket, '","') .. '"}\n')
         print('NUKED = \n{"' .. table.concat(nuket, '","') .. '"}\n')
     end
