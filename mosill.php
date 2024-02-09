@@ -130,7 +130,7 @@ function warp(a,b)
             wd = wd + 1
             bot:warp(a,b)
             sleep(7000)
-            if wd > 4 then
+            if wd > 1 then
                 return
             end
         end
@@ -316,6 +316,7 @@ for _, worlds in ipairs(listWorld) do
                 hit = 0
             end
         end
+        removeEvents()
         sleep(1000)
         bot:place(bot.x, bot.y+1, 4132)
         sleep(1000)
