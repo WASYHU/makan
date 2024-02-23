@@ -143,9 +143,16 @@ function hookfossil(varlist, netid) -- Using the variantlist event parameters. Y
         if ontext:match("`2I unearthed a Fossil!`` I better be careful getting it out...") then
             bot:wear(3934)
             sleep(200)
-            while world:getTile(bot.x,bot.y+1).fg == 3918 do
-                bot:hit(bot.x,bot.y+1)
-                sleep(200)
+            if bot.y == 1 then
+                while world:getTile(bot.x,bot.y-1).fg == 3918 do
+                    bot:hit(bot.x,bot.y-1)
+                    sleep(200)
+                end
+            else
+                while world:getTile(bot.x,bot.y+1).fg == 3918 do
+                    bot:hit(bot.x,bot.y+1)
+                    sleep(200)
+                end
             end
         end
      end
@@ -310,21 +317,39 @@ for _, worlds in ipairs(listWorld) do
         end
         goFossil()
         sleep(100)
-        local hit = 0
-        while world:getTile(bot.x,bot.y+1).fg == 3918 and hit <= 15 do
-            addEvent(Event.variantlist, hookfossil)
-            bot:hit(bot.x,bot.y+1)
-            listenEvents(1)
-            hit = hit + 1
-            if hit > 15 then
-                sleep(6000)
-                hit = 0
+        if bot.y == 1 then
+            local hit = 0
+            while world:getTile(bot.x,bot.y-1).fg == 3918 and hit <= 15 do
+                addEvent(Event.variantlist, hookfossil)
+                bot:hit(bot.x,bot.y-1)
+                listenEvents(1)
+                hit = hit + 1
+                if hit > 15 then
+                    sleep(6000)
+                    hit = 0
+                end
             end
+            removeEvents()
+            sleep(1000)
+            bot:place(bot.x, bot.y-1, 4132)
+            sleep(1000)
+        else
+            local hit = 0
+            while world:getTile(bot.x,bot.y+1).fg == 3918 and hit <= 15 do
+                addEvent(Event.variantlist, hookfossil)
+                bot:hit(bot.x,bot.y+1)
+                listenEvents(1)
+                hit = hit + 1
+                if hit > 15 then
+                    sleep(6000)
+                    hit = 0
+                end
+            end
+            removeEvents()
+            sleep(1000)
+            bot:place(bot.x, bot.y+1, 4132)
+            sleep(1000)
         end
-        removeEvents()
-        sleep(1000)
-        bot:place(bot.x, bot.y+1, 4132)
-        sleep(1000)
         for _, floatPoli in pairs(world:getObjects()) do
             if floatPoli.id == 4134 then
                 bot:collect(3, 100)
