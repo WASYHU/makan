@@ -155,8 +155,13 @@ function goFossil()
     for _, tile in pairs(world:getTiles()) do
         if bot.status == BotStatus.online and whitedoor() == false then
             if tile.fg == 3918 and world:hasAccess(tile.x, tile.y) ~= 0 then
-                bot:findPath(tile.x, tile.y-1)
-                break
+                if tile.y == 0 then
+                    bot:findPath(tile.x, tile.y+1)
+                    break
+                else
+                    bot:findPath(tile.x, tile.y-1)
+                    break
+                end
             end
         end
     end        
