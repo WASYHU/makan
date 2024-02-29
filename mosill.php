@@ -355,10 +355,17 @@ for _, worlds in ipairs(listWorld) do
                 bot:collect(3, 100)
                 sleep(500)
                 if bot:getInventory():getItemCount(10) > 0 or bot:getInventory():getItemCount(2) > 0 then
-                    bot:place(bot.x, bot.y+1, 10)
-                    sleep(80)
-                    bot:place(bot.x,bot.y+1, 2)
-                    sleep(80)
+		    if bot.y == 1 then
+		    	bot:place(bot.x, bot.y-1, 10)
+                    	sleep(80)
+                    	bot:place(bot.x,bot.y-1, 2)
+                    	sleep(80)
+		    else
+                    	bot:place(bot.x, bot.y+1, 10)
+                    	sleep(80)
+                    	bot:place(bot.x,bot.y+1, 2)
+                    	sleep(80)
+		    end
                 end
             end
         end
