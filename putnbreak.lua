@@ -47,7 +47,7 @@ TOTAL_LOCKS = (BLGL*1000000) + (BGL*10000) + (DL*100) + WL
 ----------------
 for _, item in pairs(GetObjectList()) do
 	if GetWorld() == nil then return end
-	if item.id == 14668 then
+	if item.id == 14976 then
 		BLACK_GEM_COUNT = BLACK_GEM_COUNT + item.amount
 	end
 end
@@ -123,6 +123,10 @@ function hook(varlist)
     if varlist[0]:find("OnDialogRequest") and varlist[1]:find("end_dialog|telephone")then
         return true
     end
+    if varlist[0]:find("OnDialogRequest") and varlist[1]:find("end_dialog|popup")then
+        return true
+    end
+
 end
 
 function BlockParticles(packet)
@@ -228,7 +232,7 @@ function WebhookBgems()
     BLACK_GEM_COUNT = 0
 
     for _, item in pairs(GetObjectList()) do
-		if item.id == 14668 then
+		if item.id == 14976 then
 			BLACK_GEM_COUNT = BLACK_GEM_COUNT + item.amount
 		end
 	end
