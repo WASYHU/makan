@@ -219,6 +219,9 @@ function hook(varlist)
     if varlist[0]:find("OnDialogRequest") and varlist[1]:find("end_dialog|telephone")then
         return true
     end
+    if varlist[0]:find("OnDialogRequest") and varlist[1]:find("end_dialog|popup")then
+        return true
+    end
 end
 
 function BlockParticles(packet)
