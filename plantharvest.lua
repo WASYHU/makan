@@ -167,6 +167,10 @@ local function hook(varlist)
         if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Cheat Disable:") then
             return true
         end
+        if varlist[0]:find("OnDialogRequest") and varlist[1]:find("end_dialog|popup")then
+            return true
+        end
+
 end
 
 AddHook("onvariant", "Main Hook", hook)
