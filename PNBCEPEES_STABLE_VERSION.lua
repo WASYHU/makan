@@ -265,59 +265,6 @@ function onBreak()
     sleep(1000)
 end
 
-function pshell(x)
-    local abc = [[
-    $host.ui.RawUI.WindowTitle = ""
-  
-    $deneme = "C:\Users\"+$env:USERNAME+"\AppData\Local\false.txt"
-    $deneme2 = "C:\Users\"+$env:USERNAME+"\AppData\Local\true.txt"
-  
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    [System.Collections.ArrayList]$embedArray = @()
-  
-    $WebClient=New-Object net.webclient
-    $gorkem = "]]..x..[["
-    $raw = $WebClient.DownloadString("https://panel.ntjul.online/members/raw/pnb")
-  
-    If ($raw | %{$_ -match $gorkem})
-    {
-  
-    If (Test-Path $deneme2) {
-        Remove-Item $deneme2
-    }
-    New-Item $deneme2 -type file
-    Add-Content -Path $deneme2 -Value "true"
-    }
-    else
-    {
-  
-    If (Test-Path $deneme ) {
-        Remove-Item $deneme
-    }
-    New-Item $deneme -type file
-    Add-Content -Path $deneme -Value "false"
-    }
-    ]]
-      pipe = io.popen("powershell -NoLogo -WindowStyle Hidden -ExecutionPolicy Bypass -command -", "w")
-      pipe:write(abc)
-      pipe:close()
-end
-pshell(GetLocal().userid)
-  
-log("WAIT.. CEK USERID")
-sleep(1000)
-  
-function file(name)
-    local f=io.open(name,"r")
-    if f~=nil then io.close(f) return true else return false end
-end
-  
-username = os.getenv("USERNAME");
-if file("C:\\Users\\"..username.."\\AppData\\Local\\true.txt") then
-    os.remove("C:\\Users\\"..username.."\\AppData\\Local\\true.txt")
-sleep(1000)
-log("MATCH USERID, STARTED PNB")
-
 lahNgebreak = true
 while true do
     if GetWorld() == nil then
@@ -416,10 +363,4 @@ while true do
             log("Obtain "..FormatNumber(GETTING_GEMS).." Gems For "..SendingPerMinutes.." Minute")
         end
     end
-end
-
-elseif file("C:\\Users\\"..username.."\\AppData\\Local\\false.txt") then
-    os.remove("C:\\Users\\"..username.."\\AppData\\Local\\false.txt")
-log("ID GAK SESUAI/KONTAK ADMIN ALFIRST STORE (linktr.ee/alfirst_store)")
-Sleep(100)
 end
