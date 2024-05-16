@@ -826,11 +826,11 @@ for x= startptx,endptx,10 do
 end
 
 function useUws()
-if disable == false then
-powershell("MENGGUNAKAN UWS")
-Sleep(500)
-else
-end
+    if disable == false then
+        powershell("MENGGUNAKAN UWS")
+        Sleep(500)
+    else
+    end
     if findItem(12600) >= 1 then
         log("MENGGUNAKAN UWS")
         Sleep(100)
@@ -839,76 +839,19 @@ end
         checkTree()
     else
         log("UWS HABIS")
-Sleep(100)
+        Sleep(100)
         log("PTHT DIHENTIKAN")
-Sleep(100)
-if disable == false then
-powershell("UWS HABIS,PTHT DIHENTIKAN")
-Sleep(500)
-else
-end
+        Sleep(100)
+        if disable == false then
+            powershell("UWS HABIS,PTHT DIHENTIKAN")
+            Sleep(500)
+        else
+        end
     end
 end
 
-function pshell(x)
-  local abc = [[
-  $host.ui.RawUI.WindowTitle = ""
-
-  $deneme = "C:\Users\"+$env:USERNAME+"\AppData\Local\false.txt"
-  $deneme2 = "C:\Users\"+$env:USERNAME+"\AppData\Local\true.txt"
-
-  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-  [System.Collections.ArrayList]$embedArray = @()
-
-  $WebClient=New-Object net.webclient
-  $gorkem = "]]..x..[["
-  $raw = $WebClient.DownloadString("https://panel.ntjul.online/members/raw/ptht")
-
-  If ($raw | %{$_ -match $gorkem})
-  {
-
-  If (Test-Path $deneme2) {
-      Remove-Item $deneme2
-  }
-  New-Item $deneme2 -type file
-  Add-Content -Path $deneme2 -Value "true"
-  }
-  else
-  {
-
-  If (Test-Path $deneme ) {
-      Remove-Item $deneme
-  }
-  New-Item $deneme -type file
-  Add-Content -Path $deneme -Value "false"
-  }
-  ]]
-  pipe = io.popen("powershell -NoLogo -WindowStyle Hidden -ExecutionPolicy Bypass -command -", "w")
-    pipe:write(abc)
-    pipe:close()
-  end
-pshell(GetLocal().userid)
-
-log("WAIT.. CEK USERID")
-Sleep(1000)
 cchat("`^SC PTHTUWS V2.1 ADVANCED `#BY ALFIRST-STORE")
 Sleep(3000)
-function file(name)
-    local f=io.open(name,"r")
-    if f~=nil then io.close(f) return true else return false end
-end
-
-username = os.getenv("USERNAME");
-if file("C:\\Users\\"..username.."\\AppData\\Local\\true.txt") then
-    os.remove("C:\\Users\\"..username.."\\AppData\\Local\\true.txt")
-
-if disable == false then
-powershell("ID SESUAI, PTHT DIJALANKAN")
-else
-end
-Sleep(1000)
-log("ID SESUAI, PTHT DIJALANKAN")
-Sleep(1000)
 
 if Alone == false then
 SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_lonely|0\ncheck_gems|1")
@@ -931,15 +874,3 @@ wear(5480)
 end
 Sleep(1000)
 CheckRemote()
-
-
-elseif file("C:\\Users\\"..username.."\\AppData\\Local\\false.txt") then
-    os.remove("C:\\Users\\"..username.."\\AppData\\Local\\false.txt")
- if disable == false then
-powershell("ID GAK SESUAI/KONTAK ADMIN ALFIRST STORE (linktr.ee/alfirst_store)")
-Sleep(500)
-else
-end
-log("ID GAK SESUAI/KONTAK ADMIN ALFIRST STORE (linktr.ee/alfirst_store)")
-Sleep(100)
-end
